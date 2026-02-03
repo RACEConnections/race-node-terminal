@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. Terminal v4.4</title>
+    <title>R.A.C.E. Terminal v4.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
         import { createThirdwebClient, getContract, readContract, defineChain, prepareEvent, watchContractEvents } from "https://esm.sh/thirdweb";
@@ -13,97 +13,14 @@
             OMNIF: "0xc23F43FE5D5D65b0a094c8A8A712aBd4e820A210",
             SHUB: "0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C",
             CHAIN: defineChain({ id: 1116, rpc: "https://1rpc.io/core" }),
-            REF_PRICE_USD: 0.05,
-            USD_TO_NGN: 1397 // Live rate for Feb 3, 2026
+            COINGECKO_API: "https://api.coingecko.com/api/v3/simple/price?ids=core-dao&vs_currencies=usd,ngn"
         };
 
         const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
         let currentCurrency = 'USD';
+        let livePrices = { usd: 0.05, ngn: 1397 }; // Fallback defaults
 
-        // 1. LIVE MINT ALERT SYSTEM
-        function setupEventListener(address, label) {
-            const contract = getContract({ client, address, chain: CONFIG.CHAIN });
-            const transferEvent = prepareEvent({ signature: "event Transfer(address indexed from, address indexed to, uint256 value)" });
-
-            watchContractEvents({
-                contract,
-                events: [transferEvent],
-                onEvents: (events) => {
-                    events.forEach(event => {
-                        if (event.args.from === "0x0000000000000000000000000000000000000000") {
-                            triggerAlert(`NEW ${label} MINT DETECTED!`);
-                            syncBalances();
-                        }
-                    });
-                }
-            });
-        }
-
-        function triggerAlert(msg) {
-            const alertBox = document.getElementById('mint-alert');
-            alertBox.innerText = msg;
-            alertBox.classList.remove('hidden', 'bg-green-900/20');
-            alertBox.classList.add('bg-green-500', 'text-black', 'font-bold');
-            setTimeout(() => {
-                alertBox.classList.add('hidden');
-            }, 5000);
-        }
-
-        // 2. CURRENCY TOGGLE LOGIC
-        window.toggleCurrency = function() {
-            currentCurrency = document.getElementById('currency-toggle').checked ? 'NGN' : 'USD';
-            document.getElementById('currency-label').innerText = currentCurrency;
-            syncBalances();
-        };
-
-        async function syncBalances() {
-            if (!window.userAddress) return;
-            try {
-                const omnif = getContract({ client, address: CONFIG.OMNIF, chain: CONFIG.CHAIN });
-                const shub = getContract({ client, address: CONFIG.SHUB, chain: CONFIG.CHAIN });
-
-                const [balO, balS] = await Promise.all([
-                    readContract({ contract: omnif, method: "function balanceOf(address)", params: [window.userAddress] }),
-                    readContract({ contract: shub, method: "function balanceOf(address)", params: [window.userAddress] })
-                ]);
-
-                const valO = Number(balO) / 1e18;
-                const valS = Number(balS) / 1e18;
-                const totalUSD = (valO + valS) * CONFIG.REF_PRICE_USD;
-                const displayValue = currentCurrency === 'NGN' ? totalUSD * CONFIG.USD_TO_NGN : totalUSD;
-                const symbol = currentCurrency === 'NGN' ? '₦' : '$';
-
-                document.getElementById('eco-value').innerText = symbol + displayValue.toLocaleString(undefined, {minimumFractionDigits: 2});
-                document.getElementById('omnif-bal').innerText = valO.toLocaleString();
-                document.getElementById('shub-bal').innerText = valS.toLocaleString();
-            } catch (err) { console.error(err); }
-        }
-
-        window.connect = async function() {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            window.userAddress = accounts[0];
-            document.getElementById('btn-connect').classList.add('hidden');
-            document.getElementById('node-ui').classList.remove('hidden');
-            
-            // Start Listeners
-            setupEventListener(CONFIG.OMNIF, "OMNIF");
-            setupEventListener(CONFIG.SHUB, "SACIPHUB");
-            
-            syncBalances();
-        };
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
-        body { font-family: 'Space Mono', monospace; background-color: #030303; color: #00ff00; }
-        .toggle-dot { transition: all 0.3s ease-in-out; }
-        input:checked ~ .toggle-dot { transform: translateX(100%); background-color: #4ade80; }
-    </style>
-</head>
-<body class="flex items-center justify-center min-h-screen p-4">
-    <div class="w-full max-w-sm border border-green-900 bg-black p-6 rounded relative overflow-hidden">
-        
-        <div id="mint-alert" class="hidden absolute top-0 left-0 w-full py-2 text-center text-[10px] uppercase tracking-tighter z-50"></div>
-
+        // 1. REAL
         <header class="flex justify-between items-start mb-6">
             <div>
                 <h1 class="text-xl font-bold tracking-tighter">R.A.C.E. V4.4</h1>
