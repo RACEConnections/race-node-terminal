@@ -36,3 +36,7 @@ This terminal serves as the "Anchor" between physical infrastructure projects (S
 │   └── index.html         # Main Node Interface
 ├── README.md              # Project Documentation
 └── vercel.json            # Deployment Configuration
+
+Token,Address
+OMNIF,0xc23F43FE5D5D65b0a094c8A8A712aBd4e820A210
+SACIPHUB,0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C
