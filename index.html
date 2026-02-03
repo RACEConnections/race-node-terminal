@@ -3,22 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNIF R.A.C.E. Terminal v4.1</title>
+    <title>R.A.C.E. Terminal v4.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
-        import { createThirdwebClient, getContract, prepareContractCall, sendTransaction, readContract, defineChain } from "https://esm.sh/thirdweb";
+        import { createThirdwebClient, getContract, readContract, defineChain, prepareEvent, watchContractEvents } from "https://esm.sh/thirdweb";
 
-        // 1. PROTOCOL CONFIGURATION
         const CONFIG = {
             CLIENT_ID: "763f242f0eaafeb788a2e494c956f183",
             OMNIF: "0xc23F43FE5D5D65b0a094c8A8A712aBd4e820A210",
             SHUB: "0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C",
-            CHAIN: defineChain(1116) // Core DAO Mainnet
+            CHAIN: defineChain({ id: 1116, rpc: "https://1rpc.io/core" }),
+            REF_PRICE_USD: 0.05,
+            USD_TO_NGN: 1397 // Live rate for Feb 3, 2026
         };
 
         const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
+        let currentCurrency = 'USD';
 
-        // 2. DUAL-TOKEN SYNC LOGIC
+        // 1. LIVE MINT ALERT SYSTEM
+        function setupEventListener(address, label) {
+            const contract = getContract({ client, address, chain: CONFIG.CHAIN });
+            const transferEvent = prepareEvent({ signature: "event Transfer(address indexed from, address indexed to, uint256 value)" });
+
+            watchContractEvents({
+                contract,
+                events: [transferEvent],
+                onEvents: (events) => {
+                    events.forEach(event => {
+                        if (event.args.from === "0x0000000000000000000000000000000000000000") {
+                            triggerAlert(`NEW ${label} MINT DETECTED!`);
+                            syncBalances();
+                        }
+                    });
+                }
+            });
+        }
+
+        function triggerAlert(msg) {
+            const alertBox = document.getElementById('mint-alert');
+            alertBox.innerText = msg;
+            alertBox.classList.remove('hidden', 'bg-green-900/20');
+            alertBox.classList.add('bg-green-500', 'text-black', 'font-bold');
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 5000);
+        }
+
+        // 2. CURRENCY TOGGLE LOGIC
+        window.toggleCurrency = function() {
+            currentCurrency = document.getElementById('currency-toggle').checked ? 'NGN' : 'USD';
+            document.getElementById('currency-label').innerText = currentCurrency;
+            syncBalances();
+        };
+
         async function syncBalances() {
             if (!window.userAddress) return;
             try {
@@ -30,82 +67,81 @@
                     readContract({ contract: shub, method: "function balanceOf(address)", params: [window.userAddress] })
                 ]);
 
-                // Formatting balances (assuming 18 decimals)
-                document.getElementById('omnif-bal').innerText = (Number(balO)/1e18).toLocaleString(undefined, {minimumFractionDigits: 2}) + " OMNF";
-                document.getElementById('shub-bal').innerText = (Number(balS)/1e18).toLocaleString(undefined, {minimumFractionDigits: 2}) + " SHUB";
-                document.getElementById('status').innerText = "NODE SYNCHRONIZED";
-            } catch (err) {
-                console.error("Sync Error:", err);
-                document.getElementById('status').innerText = "SYNC ERROR: CHECK CONNECTION";
-            }
+                const valO = Number(balO) / 1e18;
+                const valS = Number(balS) / 1e18;
+                const totalUSD = (valO + valS) * CONFIG.REF_PRICE_USD;
+                const displayValue = currentCurrency === 'NGN' ? totalUSD * CONFIG.USD_TO_NGN : totalUSD;
+                const symbol = currentCurrency === 'NGN' ? '₦' : '$';
+
+                document.getElementById('eco-value').innerText = symbol + displayValue.toLocaleString(undefined, {minimumFractionDigits: 2});
+                document.getElementById('omnif-bal').innerText = valO.toLocaleString();
+                document.getElementById('shub-bal').innerText = valS.toLocaleString();
+            } catch (err) { console.error(err); }
         }
 
-        // 3. THE ANCHOR & MINT PROTOCOL
-        window.executeMint = async function(tokenAddress, label) {
-            if (!window.userAddress) return alert("Connect Wallet First!");
-            try {
-                const status = document.getElementById('status');
-                status.innerText = `MINTING ${label}...`;
-                
-                const contract = getContract({ client, address: tokenAddress, chain: CONFIG.CHAIN });
-
-                const transaction = prepareContractCall({
-                    contract,
-                    method: "function mint(address to, uint256 amount)",
-                    params: [window.userAddress, BigInt(1000000 * 10**18)] // Mints 1 Million
-                });
-
-                const { transactionHash } = await sendTransaction({
-                    transaction,
-                    account: window.activeAccount
-                });
-
-                status.innerText = "SUCCESS: " + transactionHash.slice(0,10);
-                setTimeout(syncBalances, 3000); // Auto-refresh after 3 seconds
-            } catch (err) {
-                status.innerText = "FAILED: NOT OWNER OR NO GAS";
-                alert(err.message);
-            }
-        };
-
-        // 4. WALLET INITIALIZATION
         window.connect = async function() {
-            if (!window.ethereum) return alert("Please open in MetaMask Browser");
-            try {
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                window.userAddress = accounts[0];
-                window.activeAccount = { address: accounts[0] };
-                
-                document.getElementById('btn-connect').classList.add('hidden');
-                document.getElementById('node-ui').classList.remove('hidden');
-                document.getElementById('wallet-addr').innerText = window.userAddress.slice(0,6) + "..." + window.userAddress.slice(-4);
-                
-                syncBalances();
-                setInterval(syncBalances, 10000); // Auto-refresh every 10 seconds
-            } catch (err) {
-                alert("Connection Failed");
-            }
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            window.userAddress = accounts[0];
+            document.getElementById('btn-connect').classList.add('hidden');
+            document.getElementById('node-ui').classList.remove('hidden');
+            
+            // Start Listeners
+            setupEventListener(CONFIG.OMNIF, "OMNIF");
+            setupEventListener(CONFIG.SHUB, "SACIPHUB");
+            
+            syncBalances();
         };
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
-        body { font-family: 'Space Mono', monospace; background-color: #0a0a0a; color: #00ff00; }
-        .terminal-box { border: 1px solid #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); }
+        body { font-family: 'Space Mono', monospace; background-color: #030303; color: #00ff00; }
+        .toggle-dot { transition: all 0.3s ease-in-out; }
+        input:checked ~ .toggle-dot { transform: translateX(100%); background-color: #4ade80; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-sm border border-green-900 bg-black p-6 rounded relative overflow-hidden">
+        
+        <div id="mint-alert" class="hidden absolute top-0 left-0 w-full py-2 text-center text-[10px] uppercase tracking-tighter z-50"></div>
 
-    <div class="terminal-box w-full max-w-md bg-black p-6 rounded-lg">
-        <header class="mb-6 border-b border-green-900 pb-4">
-            <h1 class="text-xl font-bold tracking-tighter">R.A.C.E. TERMINAL V4.1</h1>
-            <p class="text-xs text-green-700">OLUFOLAMI_ADEOTI_CONNECT</p>
+        <header class="flex justify-between items-start mb-6">
+            <div>
+                <h1 class="text-xl font-bold tracking-tighter">R.A.C.E. V4.4</h1>
+                <p class="text-[8px] text-green-800">OSOGBO_NODE_ACTIVE</p>
+            </div>
+            
+            <label class="flex items-center cursor-pointer">
+                <span id="currency-label" class="mr-2 text-[10px] font-bold">USD</span>
+                <div class="relative">
+                    <input type="checkbox" id="currency-toggle" class="sr-only" onchange="toggleCurrency()">
+                    <div class="block bg-green-900/30 w-10 h-6 rounded-full border border-green-800"></div>
+                    <div class="toggle-dot absolute left-1 top-1 bg-green-900 w-4 h-4 rounded-full"></div>
+                </div>
+            </label>
         </header>
 
-        <button id="btn-connect" onclick="connect()" class="w-full bg-green-600 text-black py-3 font-bold hover:bg-green-400 transition-all uppercase">
-            Initialize Connection
+        <section class="mb-6 p-4 border border-green-800 bg-green-950/5 text-center">
+            <h2 class="text-[9px] uppercase text-green-700 mb-1">Total Impact Value</h2>
+            <div id="eco-value" class="text-3xl font-bold text-white tracking-tighter">$0.00</div>
+        </section>
+
+        <button id="btn-connect" onclick="connect()" class="w-full border border-green-500 py-3 text-xs hover:bg-green-900 transition-all">
+            [ INITIALIZE_PROTOCOL ]
         </button>
 
-        <div id="node-ui" class="hidden space-y-6">
-            <div class="flex justify-between text-xs mb-4">
-                <span class="text-green-800">ACTIVE_NODE:</span>
-                <span id
+        <div id="node-ui" class="hidden space-y-4">
+            <div class="grid grid-cols-2 gap-2 text-[10px]">
+                <div class="border border-green-900 p-2 text-center">
+                    <p class="text-green-800">OMNIF</p>
+                    <p id="omnif-bal" class="text-white">0</p>
+                </div>
+                <div class="border border-green-900 p-2 text-center">
+                    <p class="text-green-800">SACIPHUB</p>
+                    <p id="shub-bal" class="text-white">0</p>
+                </div>
+            </div>
+            <div class="text-[8px] text-center text-green-900">SYSTEM_STATUS: MONITORING_MAINNET...</div>
+        </div>
+    </div>
+</body>
+    </html>
