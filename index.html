@@ -109,3 +109,111 @@
             <p id="cert-wallet" class="text-xl text-white break-all px-10 font-bold">0x...</p>
             <div class="space-y-2">
                 <p class="text-yellow-600 font-bold text-lg uppercase italic underline">Adeoti Olufolami</p>
+                <p class="text-green-900 text-xs">FOUNDER SIGNATURE | FEB 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createThirdwebClient } from "https://esm.sh/thirdweb";
+        import { upload } from "https://esm.sh/thirdweb/storage";
+
+        const CONFIG = {
+            CLIENT_ID: "22de494f12ad3df515718d82997e30bd",
+            UPLINK_URL: "https://usebasin.com/f/cd284f12af06",
+            EVENT_DATE: new Date("March 15, 2026 10:00:00").getTime(),
+            OWNER: "0x88d585bd60be1349dd1c6c217d27f87b0351fd0e"
+        };
+
+        const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
+        window.client = client;
+
+        // NAVIGATION
+        window.switchTab = (tab) => {
+            document.getElementById('view-terminal').classList.toggle('hidden', tab !== 'terminal');
+            document.getElementById('view-wall').classList.toggle('hidden', tab !== 'wall');
+            
+            const termBtn = document.getElementById('tab-terminal');
+            const wallBtn = document.getElementById('tab-wall');
+            
+            if(tab === 'terminal') {
+                termBtn.className = "text-[10px] font-bold text-green-500 border-b-2 border-green-500 pb-1";
+                wallBtn.className = "text-[10px] font-bold text-green-900 hover:text-green-500 transition-all";
+            } else {
+                wallBtn.className = "text-[10px] font-bold text-yellow-500 border-b-2 border-yellow-500 pb-1";
+                termBtn.className = "text-[10px] font-bold text-green-900 hover:text-green-500 transition-all";
+            }
+        };
+
+        // TIMER LOGIC
+        setInterval(() => {
+            const now = new Date().getTime();
+            const distance = CONFIG.EVENT_DATE - now;
+            if (distance > 0) {
+                document.getElementById("timer-days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2,'0');
+                document.getElementById("timer-hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
+                document.getElementById("timer-mins").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
+            }
+        }, 1000);
+
+        // BASIN INTEL SUBMISSION
+        window.submitFeedback = async () => {
+            const status = document.getElementById('form-status');
+            const fileInput = document.getElementById('screenshot-input');
+            const desc = document.getElementById('issue-desc').value;
+            let imgUrl = "No Evidence Uploaded";
+            
+            if(!desc) { status.innerText = "ERROR: INTEL_DESCRIPTION_EMPTY"; return; }
+
+            try {
+                status.innerText = "INITIALIZING_SECURE_UPLINK...";
+                if(fileInput.files.length > 0) {
+                    status.innerText = "PINNING_EVIDENCE_TO_IPFS...";
+                    const uris = await upload({ client, files: [fileInput.files[0]] });
+                    imgUrl = uris[0].replace("ipfs://", "https://ipfs.io/ipfs/");
+                }
+                
+                status.innerText = "TRANSMITTING_TO_BASIN_RELAY...";
+                const response = await fetch(CONFIG.UPLINK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                    body: JSON.stringify({ 
+                        wallet: window.userAddress || "Anonymous_Node", 
+                        intel: desc, 
+                        evidence: imgUrl,
+                        system: "RACE_TERMINAL_V6.5"
+                    })
+                });
+
+                if (response.ok) {
+                    status.innerText = "SUCCESS: INTEL_SECURED_BY_HQ";
+                    document.getElementById('issue-desc').value = "";
+                    fileInput.value = "";
+                } else { throw new Error("Basin Handshake Failure"); }
+            } catch (e) { 
+                console.error(e);
+                status.innerText = "CRITICAL_ERROR: UPLINK_INTERRUPTED"; 
+            }
+        };
+
+        // CERTIFICATE LOGIC
+        window.generateCertificate = async () => {
+            document.getElementById('cert-wallet').innerText = window.userAddress || CONFIG.OWNER;
+            const canvas = await html2canvas(document.getElementById('pioneer-certificate'), { scale: 2 });
+            const link = document.createElement('a');
+            link.download = `SACIPHUB_Pioneer_${(window.userAddress || 'Elite').slice(0,6)}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        };
+
+        // MOCK CONNECT: UNLOCKS ALL TIERS FOR TESTING
+        document.getElementById('connect-btn').onclick = () => {
+            document.getElementById('connect-section').classList.add('hidden');
+            document.getElementById('node-ui').classList.remove('hidden');
+            document.getElementById('feedback-hub').classList.remove('hidden'); 
+            document.getElementById('trophy-case').classList.remove('hidden'); 
+            window.userAddress = CONFIG.OWNER; // Sets session to your wallet
+        };
+    </script>
+</body>
+                </html>
