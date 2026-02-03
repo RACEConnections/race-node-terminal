@@ -71,4 +71,118 @@
 
                 <section id="feedback-hub" class="hidden border border-blue-900 p-4 bg-blue-950/5">
                     <h2 class="text-[10px] text-blue-400 font-bold uppercase mb-4">Intel Submission Hub</h2>
-                    <input type="file" id="
+                    <input type="file" id="screenshot-input" class="w-full text-[8px] mb-2 file:bg-blue-900 file:text-white file:border-none file:px-2 file:py-1">
+                    <textarea id="issue-desc" placeholder="Operational feedback..." class="w-full bg-black border border-blue-900 p-2 text-[10px] h-20 outline-none"></textarea>
+                    <button onclick="submitFeedback()" class="w-full border border-blue-500 text-blue-400 py-2 text-[8px] mt-2">TRANSMIT_INTEL</button>
+                    <p id="form-status" class="text-[7px] mt-1 text-center italic"></p>
+                </section>
+            </div>
+        </div>
+
+        <div id="view-wall" class="hidden space-y-4">
+            <h2 class="text-[12px] text-yellow-500 font-bold uppercase text-center mb-6">Hall of Pioneers</h2>
+            <div class="border border-yellow-900/30 p-3 bg-yellow-950/5 flex items-center space-x-4">
+                <span class="text-2xl">🏆</span>
+                <div>
+                    <p class="text-[10px] text-yellow-500 font-bold">0x88d5...fd0e</p>
+                    <p class="text-[8px] text-yellow-800 italic">"The Genesis Contributor. First to verify RACE logic."</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="pioneer-certificate" class="fixed -left-[2000px] w-[800px] h-[600px] bg-black border-[10px] border-yellow-600 p-10 flex flex-col items-center justify-between text-center font-mono">
+        <h1 class="text-4xl text-yellow-500 uppercase font-bold">Pioneer Certificate</h1>
+        <p id="cert-wallet" class="text-xl text-white break-all">0x...</p>
+        <p class="text-green-500">Issued by Founder Adeoti Olufolami - Feb 2026</p>
+    </div>
+
+    <script type="module">
+        import { createThirdwebClient } from "https://esm.sh/thirdweb";
+        import { upload } from "https://esm.sh/thirdweb/storage";
+
+        const CONFIG = {
+            CLIENT_ID: "22de494f12ad3df515718d82997e30bd",
+            NOTICE_BOARD: "0x25548Ba29a0071F30E4bDCd98Ea72F79341b07a1",
+            OWNER: "0x88d585bd60be1349dd1c6c217d27f87b0351fd0e",
+            FORMSPREE_URL: "https://formspree.io/f/xqelvqdo",
+            EVENT_DATE: new Date("March 15, 2026 10:00:00").getTime()
+        };
+
+        const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
+
+        // TAB SWITCHING
+        window.switchTab = (tab) => {
+            document.getElementById('view-terminal').classList.toggle('hidden', tab !== 'terminal');
+            document.getElementById('view-wall').classList.toggle('hidden', tab !== 'wall');
+        };
+
+        // COUNTDOWN TIMER
+        setInterval(() => {
+            const now = new Date().getTime();
+            const distance = CONFIG.EVENT_DATE - now;
+            if (distance > 0) {
+                document.getElementById("timer-days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2,'0');
+                document.getElementById("timer-hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
+                document.getElementById("timer-mins").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
+            }
+        }, 1000);
+
+        // FEEDBACK & IPFS SUBMISSION
+        window.submitFeedback = async () => {
+            const status = document.getElementById('form-status');
+            const fileInput = document.getElementById('screenshot-input');
+            const desc = document.getElementById('issue-desc').value;
+            let imgUrl = "No Image Provided";
+            
+            try {
+                status.innerText = "INITIALIZING_UPLINK...";
+                if(fileInput.files.length > 0) {
+                    status.innerText = "PINNING_TO_IPFS...";
+                    const uris = await upload({ client, files: [fileInput.files[0]] });
+                    imgUrl = uris[0].replace("ipfs://", "https://ipfs.io/ipfs/");
+                }
+                
+                status.innerText = "TRANSMITTING_INTEL...";
+                const response = await fetch(CONFIG.FORMSPREE_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        wallet: "Authorized_Node", 
+                        description: desc, 
+                        evidence_ipfs: imgUrl 
+                    })
+                });
+
+                if (response.ok) {
+                    status.innerText = "INTEL_SUCCESSFULLY_TRANSMITTED";
+                    document.getElementById('issue-desc').value = "";
+                } else {
+                    throw new Error("Handshake failed");
+                }
+            } catch (e) { 
+                console.error(e);
+                status.innerText = "ERROR: UPLINK_INTERRUPTED"; 
+            }
+        };
+
+        // CERTIFICATE GENERATION
+        window.generateCertificate = async () => {
+            document.getElementById('cert-wallet').innerText = "0x88d5...fd0e"; // Mock for display
+            const canvas = await html2canvas(document.getElementById('pioneer-certificate'));
+            const link = document.createElement('a');
+            link.download = 'SACIPHUB_Pioneer_Certificate.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        };
+
+        // UI TRIGGER FOR CONNECTION (Mocking Auth logic)
+        document.getElementById('connect-btn').onclick = () => {
+            document.getElementById('connect-section').classList.add('hidden');
+            document.getElementById('node-ui').classList.remove('hidden');
+            document.getElementById('feedback-hub').classList.remove('hidden'); 
+            document.getElementById('trophy-case').classList.remove('hidden'); 
+        };
+    </script>
+</body>
+                </html>
