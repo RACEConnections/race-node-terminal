@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNIF R.A.C.E. Terminal</title>
+    <title>OMNIF R.A.C.E. Terminal v4.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
         import { createThirdwebClient, getContract, prepareContractCall, sendTransaction, readContract, defineChain } from "https://esm.sh/thirdweb";
 
@@ -17,23 +18,41 @@
 
         const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
 
-        // 2. THE ANCHOR FUNCTION: Creating value on-chain
-        window.executeAnchor = async function() {
+        // 2. DUAL-TOKEN SYNC LOGIC
+        async function syncBalances() {
+            if (!window.userAddress) return;
+            try {
+                const omnif = getContract({ client, address: CONFIG.OMNIF, chain: CONFIG.CHAIN });
+                const shub = getContract({ client, address: CONFIG.SHUB, chain: CONFIG.CHAIN });
+
+                const [balO, balS] = await Promise.all([
+                    readContract({ contract: omnif, method: "function balanceOf(address)", params: [window.userAddress] }),
+                    readContract({ contract: shub, method: "function balanceOf(address)", params: [window.userAddress] })
+                ]);
+
+                // Formatting balances (assuming 18 decimals)
+                document.getElementById('omnif-bal').innerText = (Number(balO)/1e18).toLocaleString(undefined, {minimumFractionDigits: 2}) + " OMNF";
+                document.getElementById('shub-bal').innerText = (Number(balS)/1e18).toLocaleString(undefined, {minimumFractionDigits: 2}) + " SHUB";
+                document.getElementById('status').innerText = "NODE SYNCHRONIZED";
+            } catch (err) {
+                console.error("Sync Error:", err);
+                document.getElementById('status').innerText = "SYNC ERROR: CHECK CONNECTION";
+            }
+        }
+
+        // 3. THE ANCHOR & MINT PROTOCOL
+        window.executeMint = async function(tokenAddress, label) {
+            if (!window.userAddress) return alert("Connect Wallet First!");
             try {
                 const status = document.getElementById('status');
-                status.innerText = "ANCHORING PROTOCOL...";
+                status.innerText = `MINTING ${label}...`;
                 
-                const contract = getContract({ 
-                    client, 
-                    address: CONFIG.OMNIF, 
-                    chain: CONFIG.CHAIN 
-                });
+                const contract = getContract({ client, address: tokenAddress, chain: CONFIG.CHAIN });
 
-                // Prepare the 'mint' transaction
                 const transaction = prepareContractCall({
                     contract,
                     method: "function mint(address to, uint256 amount)",
-                    params: [window.userAddress, BigInt(1 * 10**18)] // Mints 1.0 OMNIF
+                    params: [window.userAddress, BigInt(1000000 * 10**18)] // Mints 1 Million
                 });
 
                 const { transactionHash } = await sendTransaction({
@@ -41,61 +60,52 @@
                     account: window.activeAccount
                 });
 
-                status.innerText = "SUCCESS: " + transactionHash.slice(0,10) + "...";
-                syncBalances();
+                status.innerText = "SUCCESS: " + transactionHash.slice(0,10);
+                setTimeout(syncBalances, 3000); // Auto-refresh after 3 seconds
             } catch (err) {
-                console.error(err);
-                document.getElementById('status').innerText = "R.A.C.E. ERROR: REJECTED";
+                status.innerText = "FAILED: NOT OWNER OR NO GAS";
+                alert(err.message);
             }
         };
 
-        // 3. DUAL-TOKEN SYNC LOGIC
-        async function syncBalances() {
-            const omnif = getContract({ client, address: CONFIG.OMNIF, chain: CONFIG.CHAIN });
-            const shub = getContract({ client, address: CONFIG.SHUB, chain: CONFIG.CHAIN });
-
-            const [balO, balS] = await Promise.all([
-                readContract({ contract: omnif, method: "function balanceOf(address)", params: [window.userAddress] }),
-                readContract({ contract: shub, method: "function balanceOf(address)", params: [window.userAddress] })
-            ]);
-
-            document.getElementById('omnif-bal').innerText = (Number(balO)/1e18).toFixed(2) + " OMNF";
-            document.getElementById('shub-bal').innerText = (Number(balS)/1e18).toFixed(2) + " SHUB";
-        }
-
-        // Connect Wallet
+        // 4. WALLET INITIALIZATION
         window.connect = async function() {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            window.userAddress = accounts[0];
-            window.activeAccount = { address: accounts[0] };
-            document.getElementById('btn-connect').style.display = 'none';
-            document.getElementById('node-ui').style.display = 'block';
-            syncBalances();
+            if (!window.ethereum) return alert("Please open in MetaMask Browser");
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                window.userAddress = accounts[0];
+                window.activeAccount = { address: accounts[0] };
+                
+                document.getElementById('btn-connect').classList.add('hidden');
+                document.getElementById('node-ui').classList.remove('hidden');
+                document.getElementById('wallet-addr').innerText = window.userAddress.slice(0,6) + "..." + window.userAddress.slice(-4);
+                
+                syncBalances();
+                setInterval(syncBalances, 10000); // Auto-refresh every 10 seconds
+            } catch (err) {
+                alert("Connection Failed");
+            }
         };
     </script>
     <style>
-        body { background: #050505; color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; text-transform: uppercase; }
-        .terminal { border: 2px solid #00ff00; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px #00ff00; }
-        .token-row { display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid #004400; }
-        button { background: #00ff00; color: #000; border: none; padding: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        button:hover { background: #00cc00; }
-        #status { font-size: 0.8em; color: #888; margin-top: 10px; text-align: center; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+        body { font-family: 'Space Mono', monospace; background-color: #0a0a0a; color: #00ff00; }
+        .terminal-box { border: 1px solid #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); }
     </style>
 </head>
-<body>
-    <div class="terminal">
-        <h2>R.A.C.E. NODE V4.0</h2>
-        <p>ID: OLUFOLAMI_ADEOTI_CONNECT</p>
-        
-        <button id="btn-connect" onclick="connect()">INITIALIZE CONNECTIONS</button>
+<body class="flex items-center justify-center min-h-screen p-4">
 
-        <div id="node-ui" style="display:none;">
-            <div class="token-row"><span>OMNIF (Utility)</span><span id="omnif-bal">0.00</span></div>
-            <div class="token-row"><span>SACIPHUB (Gov)</span><span id="shub-bal">0.00</span></div>
-            
-            <button onclick="executeAnchor()">EXECUTE ANCHOR PROTOCOL</button>
-            <div id="status">STANDING BY...</div>
-        </div>
-    </div>
-</body>
-  </html>
+    <div class="terminal-box w-full max-w-md bg-black p-6 rounded-lg">
+        <header class="mb-6 border-b border-green-900 pb-4">
+            <h1 class="text-xl font-bold tracking-tighter">R.A.C.E. TERMINAL V4.1</h1>
+            <p class="text-xs text-green-700">OLUFOLAMI_ADEOTI_CONNECT</p>
+        </header>
+
+        <button id="btn-connect" onclick="connect()" class="w-full bg-green-600 text-black py-3 font-bold hover:bg-green-400 transition-all uppercase">
+            Initialize Connection
+        </button>
+
+        <div id="node-ui" class="hidden space-y-6">
+            <div class="flex justify-between text-xs mb-4">
+                <span class="text-green-800">ACTIVE_NODE:</span>
+                <span id
