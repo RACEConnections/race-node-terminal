@@ -9,12 +9,22 @@
         import { createThirdwebClient, getContract, readContract, defineChain, prepareEvent, watchContractEvents } from "https://esm.sh/thirdweb";
 
         const CONFIG = {
-            CLIENT_ID: "763f242f0eaafeb788a2e494c956f183",
-            OMNIF: "0xc23F43FE5D5D65b0a094c8A8A712aBd4e820A210",
-            SHUB: "0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C",
-            CHAIN: defineChain({ id: 1116, rpc: "https://1rpc.io/core" }),
-            COINGECKO_API: "https://api.coingecko.com/api/v3/simple/price?ids=core-dao&vs_currencies=usd,ngn"
-        };
+    // Verified Client ID from your Thirdweb Project Settings
+    CLIENT_ID: "22de494f12ad3df515718d82997e30bd", 
+    
+    // Your Live Solidity Contract Address
+    NOTICE_BOARD: "0x25548Ba29a0071F30E4bDCd98Ea72F79341b07a1", 
+    
+    // Existing Token and Owner details
+    SHUB: "0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C",
+    OWNER: "0x88d585bd60be1349dd1c6c217d27f87b0351fd0e",
+    
+    // Stabilized Core Mainnet connection via 1RPC
+    CHAIN: defineChain({ 
+        id: 1116, 
+        rpc: "https://1rpc.io/core" 
+    })
+};
 
         const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
         let currentCurrency = 'USD';
