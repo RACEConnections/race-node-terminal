@@ -3,197 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SACIPHUB R.A.C.E. Terminal v6.6</title>
+    <title>SACIPHUB | R.A.C.E. Terminal v7.0</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@900&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-        body { font-family: 'JetBrains Mono', monospace; background-color: #000; color: #4ade80; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 10px; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .animate-marquee { display: inline-flex; animation: marquee 25s linear infinite; }
-        .tab-content { transition: opacity 0.3s ease-in-out; }
-        .gold-glow { box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+        body { font-family: 'Space Mono', monospace; background-color: #000; color: #4ade80; overflow-x: hidden; }
+        .terminal-border { border: 1px solid rgba(74, 222, 128, 0.2); }
+        .glitch-effect:hover { text-shadow: 2px 0 #ff0000, -2px 0 #00ff00; }
+        .hidden { display: none !important; }
+        @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #1a5e1a; }
     </style>
 </head>
-<body class="min-h-screen pb-20 selection:bg-green-500 selection:text-black">
+<body class="p-4 md:p-8">
 
-    <div class="w-full bg-green-950/20 border-b border-green-900 overflow-hidden py-1">
-        <div class="flex animate-marquee whitespace-nowrap items-center">
-            <span class="text-[8px] text-green-500 mx-8 uppercase tracking-widest">🏆 TOP_INTEL_NODES:</span>
-            <span class="text-[8px] text-white mx-4 font-bold">1. 0x88d5...fd0e [MARKET_MAKER]</span>
-            <span class="text-[8px] text-white/40 mx-4 font-bold italic">2. [OPEN_SLOT]</span>
-            <span class="text-[8px] text-white/40 mx-4 font-bold italic">3. [OPEN_SLOT]</span>
-            <span class="text-[8px] text-green-500 mx-8 uppercase tracking-widest">🏆 TOP_INTEL_NODES:</span>
-            <span class="text-[8px] text-white mx-4 font-bold">1. 0x88d5...fd0e [MARKET_MAKER]</span>
+    <div id="maintenance-overlay" class="hidden fixed inset-0 z-[6000] bg-black flex flex-col items-center justify-center p-6 text-center">
+        <div class="mb-8 animate-pulse">
+            <img src="https://gateway.pinata.cloud/ipfs/bafybeibuodyxtwjkazcdnvtbu36vj3ohwuqr5p2mjmamg4kqza2nrodpie" class="w-24 border border-green-500/50 p-2" alt="Logo">
+        </div>
+        <h1 class="text-green-500 font-black text-xl uppercase tracking-tighter">System_Optimization_In_Progress</h1>
+        <div class="w-64 bg-green-900/20 h-1 mt-4 overflow-hidden">
+            <div class="bg-green-500 h-full w-1/2 animate-[slide_2s_infinite_linear]"></div>
+        </div>
+        <p class="text-[8px] text-green-900 font-bold mt-8 uppercase tracking-widest italic">Recalibrating_Primary_Uplink...</p>
+    </div>
+
+    <div id="unlock-gate" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center p-6">
+        <div class="max-w-md w-full border border-green-500 p-8 bg-black shadow-[0_0_50px_rgba(74,222,128,0.1)]">
+            <h2 class="text-green-500 font-black text-xs uppercase tracking-[0.5em] mb-8 text-center">System_Lock_Active</h2>
+            <div class="space-y-4">
+                <input id="launch-key-input" type="text" placeholder="ENTER_GENESIS_KEY" class="w-full bg-black border border-green-900 p-4 text-green-500 font-mono text-center text-sm outline-none focus:border-green-400">
+                <button onclick="attemptLaunch()" class="w-full bg-green-900/20 border border-green-500 text-green-500 py-3 font-black text-[10px] hover:bg-green-500 hover:text-black uppercase">Initiate_Uplink</button>
+            </div>
+            <p id="unlock-status" class="text-center text-[6px] text-green-900 mt-6 uppercase">Waiting_for_Founder_Signal...</p>
         </div>
     </div>
 
-    <div id="event-header" class="bg-red-950/20 border-b border-red-900 py-3 px-4">
-        <div class="flex justify-between items-center max-w-2xl mx-auto">
-            <div>
-                <p class="text-[8px] text-red-500 font-bold uppercase tracking-tighter">Next Physical Summit</p>
-                <h3 class="text-[10px] text-white font-black uppercase">Osogbo Innovation Hub</h3>
+    <div id="terminal-content" class="max-w-4xl mx-auto opacity-20 pointer-events-none transition-opacity duration-1000">
+        
+        <header class="text-center mb-8">
+            <img src="https://gateway.pinata.cloud/ipfs/bafybeibuodyxtwjkazcdnvtbu36vj3ohwuqr5p2mjmamg4kqza2nrodpie" class="w-16 mx-auto mb-4 border border-green-900/50 p-1">
+            <h1 class="text-5xl font-black text-white italic glitch-effect tracking-tighter" style="font-family: 'Inter', sans-serif;">SACIPHUB</h1>
+            <p class="text-[8px] tracking-[0.5em] text-green-800 uppercase">Osogbo_Digital_Frontier // v7.0</p>
+        </header>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="md:col-span-2 border border-green-900/30 p-4 bg-green-950/5">
+                <p class="text-[7px] text-green-700 uppercase font-bold mb-4">Phase_1_Sync_Countdown</p>
+                <div class="flex justify-between items-center px-4">
+                    <div class="text-center"><h2 id="cd-days" class="text-3xl font-black text-white">00</h2><p class="text-[6px] text-green-900">DAYS</p></div>
+                    <div class="text-center"><h2 id="cd-hours" class="text-3xl font-black text-white">00</h2><p class="text-[6px] text-green-900">HOURS</p></div>
+                    <div class="text-center"><h2 id="cd-mins" class="text-3xl font-black text-white">00</h2><p class="text-[6px] text-green-900">MINS</p></div>
+                    <div class="text-center"><h2 id="cd-secs" class="text-3xl font-black text-green-400">00</h2><p class="text-[6px] text-green-900">SECS</p></div>
+                </div>
             </div>
-            <div class="flex space-x-3">
-                <div class="text-center"><p id="timer-days" class="text-xs text-white font-bold">00</p><p class="text-[6px] text-red-800 uppercase">Days</p></div>
-                <div class="text-center"><p id="timer-hours" class="text-xs text-white font-bold">00</p><p class="text-[6px] text-red-800 uppercase">Hrs</p></div>
-                <div class="text-center"><p id="timer-mins" class="text-xs text-white font-bold">00</p><p class="text-[6px] text-red-800 uppercase">Min</p></div>
+            <div class="border border-purple-900/50 p-4 bg-purple-950/5 relative">
+                <p class="text-[7px] text-purple-400 uppercase font-bold">Early_Bird_Reward</p>
+                <p class="text-[6px] text-gray-500 mt-2">Secure your Founder's First-Mover NFT slot.</p>
+                <button onclick="registerForEarlyBird()" id="eb-btn" class="w-full mt-4 bg-purple-900 text-white py-2 text-[8px] font-black hover:bg-purple-600 uppercase">Notify_Me</button>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="border border-green-900/30 bg-black p-4">
+                <h3 class="text-[8px] text-green-500 uppercase font-bold mb-4">Governance_Pulse</h3>
+                <div class="h-40 flex justify-center"><canvas id="liveGovChart"></canvas></div>
+            </div>
+            <div class="border border-green-900/30 bg-black p-4">
+                <h3 class="text-[8px] text-purple-400 uppercase font-bold mb-4">Network_Expansion</h3>
+                <div class="h-40"><canvas id="growthChart"></canvas></div>
+            </div>
+        </section>
+
+        <section class="border border-green-900/50 p-6 bg-black/40 mb-8">
+            <h3 class="text-[9px] text-green-400 font-black uppercase mb-6 flex items-center">
+                <span class="mr-2 animate-pulse">●</span> PENDING_STRATEGIC_DIRECTIVES
+            </h3>
+            <div id="proposal-list" class="space-y-4"></div>
+            <div id="withdrawn-logs" class="mt-8 border-t border-red-900/20 pt-4">
+                <h4 class="text-[7px] text-red-900 uppercase font-black mb-3 italic">Retracted_Directives_Log</h4>
+                <div id="withdrawn-list" class="space-y-2 opacity-50"></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="support-widget" class="fixed bottom-6 right-6 z-[4000]">
+        <button onclick="toggleChat()" class="bg-red-900 border-2 border-red-500 text-white p-3 rounded-full shadow-lg">SOS</button>
+        <div id="chat-box" class="hidden absolute bottom-16 right-0 w-72 bg-black border-2 border-red-900 p-4">
+            <h4 class="text-[10px] text-red-500 font-black uppercase mb-4">Support_Uplink</h4>
+            <textarea id="support-msg" placeholder="STATE_YOUR_ISSUE..." class="w-full bg-black border border-red-900 p-2 text-red-500 text-[10px] h-24 outline-none"></textarea>
+            <button onclick="sendSupportSignal()" id="send-sos" class="w-full bg-red-900 text-white py-2 text-[10px] font-black uppercase mt-2">Transmit_Signal</button>
+            <p id="sos-status" class="text-[6px] text-center text-red-900 mt-2 uppercase"></p>
+        </div>
+    </div>
+
+    <div id="directive-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md z-[5000] flex items-center justify-center p-4">
+        <div class="border border-green-500 bg-black w-full max-w-2xl p-8 relative overflow-y-auto max-h-[90vh]">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-green-500 font-bold">CLOSE_X</button>
+            <p id="modal-id" class="text-[7px] text-green-800 mb-2"></p>
+            <h2 id="modal-title" class="text-2xl font-black text-white uppercase mb-6"></h2>
+            <div class="text-[11px] text-gray-400 font-mono mb-8 whitespace-pre-wrap" id="modal-desc"></div>
+            <div id="whitepaper-link" class="hidden p-4 border border-green-500/30 bg-green-950/10 flex justify-between items-center">
+                <p class="text-[8px] text-white">SD-000_TECHNICAL_BLUEPRINT.PDF</p>
+                <a href="https://gateway.pinata.cloud/ipfs/YOUR_PDF_CID" target="_blank" class="bg-green-500 text-black px-4 py-1 text-[8px] font-black">DOWNLOAD_INTEL</a>
             </div>
         </div>
     </div>
 
-    <main class="max-w-xl mx-auto p-6">
-        <nav class="flex justify-center space-x-6 mb-8 border-b border-green-900 pb-2">
-            <button onclick="switchTab('terminal')" id="tab-terminal" class="text-[10px] font-bold text-green-500 border-b-2 border-green-500 pb-1">COMMAND_CENTER</button>
-            <button onclick="switchTab('wall')" id="tab-wall" class="text-[10px] font-bold text-green-900 hover:text-green-500 transition-all">WALL_OF_FAME</button>
-        </nav>
+    <script>
+        // --- CONSTANTS ---
+        const FOUNDER_ADDRESS = "0x88d57577884D25055b11155986927902E394fd0e";
+        const GENESIS_KEY = "0x4F534F47424F5F47454E455349535F32303236";
+        const DISCORD_WEBHOOK = "YOUR_DISCORD_WEBHOOK_URL";
+        const TARGET_DATE = new Date("March 15, 2026 00:00:00").getTime();
+        
+        // --- CONFIG ---
+        const supabase = supabase.createClient(
+            'YOUR_SUPABASE_URL', 
+            'YOUR_SUPABASE_ANON_KEY'
+        );
 
-        <div id="view-terminal" class="tab-content space-y-8">
-            <div id="connect-section" class="text-center p-10 border border-dashed border-green-900 bg-green-950/5">
-                <p class="text-[10px] mb-4 text-green-700 uppercase tracking-widest italic">Node Handshake Required</p>
-                <button id="connect-btn" class="bg-green-600 text-black px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-green-400 transition-colors shadow-lg">Connect Node Wallet</button>
-                <div class="mt-4">
-                    <a href="#" class="text-[8px] text-green-900 underline hover:text-green-500 uppercase">Download_Onboarding_Manual.pdf</a>
-                </div>
-            </div>
-
-            <div id="node-ui" class="hidden space-y-6">
-                <div id="trophy-case" class="hidden flex flex-col items-center p-4 border border-yellow-500/30 bg-yellow-500/5 rounded gold-glow">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-                    <p class="mt-2 text-[8px] font-bold text-yellow-500 uppercase tracking-widest">Elite Pioneer Status</p>
-                    <button onclick="generateCertificate()" class="mt-2 text-[7px] text-yellow-600 underline hover:text-yellow-400">DOWNLOAD_PIONEER_CERTIFICATE</button>
-                </div>
-
-                <section id="liquidity-engine" class="hidden border border-yellow-600 p-4 bg-yellow-950/10 rounded-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-[10px] text-yellow-500 font-bold uppercase">Liquidity Engine [v1.0]</h2>
-                        <span class="text-[7px] bg-yellow-600 text-black px-2 py-0.5 font-bold animate-pulse">ACTIVE_REWARDS</span>
-                    </div>
-                    <button onclick="window.open('https://archerswap.finance/add/CORE/0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C', '_blank')" class="w-full bg-yellow-600 text-black py-2 text-[9px] font-black uppercase hover:bg-yellow-400">Initialize_Liquidity_Pairing</button>
-                </section>
-
-                <section class="border border-green-900 p-4 bg-green-950/5">
-                    <h2 class="text-[10px] text-green-500 font-bold uppercase mb-4">Osogbo Digital Roadmap</h2>
-                    <div class="space-y-4 text-[8px]">
-                        <div class="pl-4 border-l border-green-500"><p class="text-green-400 font-bold">Phase 1: Foundation (100%)</p></div>
-                        <div class="pl-4 border-l border-blue-500">
-                            <p class="text-blue-400 font-bold">Phase 2: OMNIF Marketplace UAT</p>
-                            <div class="w-full bg-blue-900/20 h-1 mt-1"><div class="bg-blue-500 h-full" style="width: 50%"></div></div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="feedback-hub" class="hidden border border-blue-900 p-4 bg-blue-950/5">
-                    <h2 class="text-[10px] text-blue-400 font-bold uppercase mb-4">Intel Submission Hub</h2>
-                    <input type="file" id="screenshot-input" class="w-full text-[8px] mb-3 text-blue-300">
-                    <textarea id="issue-desc" placeholder="Operational intel..." class="w-full bg-black border border-blue-900 p-2 text-[10px] h-20 outline-none text-blue-100"></textarea>
-                    <button onclick="submitFeedback()" class="w-full border border-blue-500 text-blue-400 py-2 text-[8px] mt-2 font-bold hover:bg-blue-500 hover:text-black">TRANSMIT_INTEL_TO_HQ</button>
-                    <p id="form-status" class="text-[7px] mt-2 text-center italic text-blue-900 uppercase"></p>
-                </section>
-            </div>
-        </div>
-
-        <div id="view-wall" class="hidden space-y-4">
-            <h2 class="text-[12px] text-yellow-500 font-bold uppercase text-center mb-6">Hall of Pioneers</h2>
-            <div class="border border-yellow-900/30 p-4 bg-yellow-950/5 flex items-center space-x-4 rounded">
-                <span class="text-3xl">🏆</span>
-                <div>
-                    <p class="text-[10px] text-yellow-500 font-bold">0x88d585bd60be1349dd1c6c217d27f87b0351fd0e</p>
-                    <p class="text-[8px] text-yellow-800 italic uppercase">"The Genesis Contributor."</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div id="pioneer-certificate" class="fixed -left-[3000px] w-[800px] h-[600px] bg-black border-[10px] border-yellow-600 p-10 flex flex-col items-center justify-between text-center">
-        <h1 class="text-4xl text-yellow-500 font-bold uppercase">Pioneer Certificate</h1>
-        <p id="cert-wallet" class="text-xl text-white break-all px-10">0x...</p>
-        <p class="text-green-500">Issued by Founder Adeoti Olufolami - Feb 2026</p>
-    </div>
-
-    <script type="module">
-        import { createThirdwebClient } from "https://esm.sh/thirdweb";
-        import { upload } from "https://esm.sh/thirdweb/storage";
-
-        const CONFIG = {
-            CLIENT_ID: "22de494f12ad3df515718d82997e30bd",
-            UPLINK_URL: "https://usebasin.com/f/cd284f12af06", // Verified Basin ID
-            EVENT_DATE: new Date("March 15, 2026 10:00:00").getTime(),
-            SHUB_CONTRACT: "0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C"
+        const sd000 = {
+            id: "SD-000",
+            title: "GENESIS_TREASURY_ALLOCATION",
+            longDesc: "ABSTRACT: 5% Royalty Redistribution Protocol.\n\nALLOCATION:\n- 50% HARDWARE: Server maintenance.\n- 30% SOLAR: Battery expansion.\n- 20% REWARDS: Node incentives.",
+            isGenesis: true
         };
 
-        const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
-        window.client = client;
-
-        // TAB SYSTEM
-        window.switchTab = (tab) => {
-            document.getElementById('view-terminal').classList.toggle('hidden', tab !== 'terminal');
-            document.getElementById('view-wall').classList.toggle('hidden', tab !== 'wall');
-        };
-
-        // COUNTDOWN
-        setInterval(() => {
-            const now = new Date().getTime();
-            const distance = CONFIG.EVENT_DATE - now;
-            if (distance > 0) {
-                document.getElementById("timer-days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2,'0');
-                document.getElementById("timer-hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
-                document.getElementById("timer-mins").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
-            }
-        }, 1000);
-
-        // GATING LOGIC (MOCKED FOR INITIAL LOAD)
-        async function verifyTiers(balance) {
-            if(balance >= 100000) document.getElementById('feedback-hub').classList.remove('hidden');
-            if(balance >= 500000) {
-                document.getElementById('liquidity-engine').classList.remove('hidden');
-                document.getElementById('trophy-case').classList.remove('hidden');
+        // --- CORE FUNCTIONS ---
+        function attemptLaunch() {
+            const val = document.getElementById('launch-key-input').value.trim();
+            const status = document.getElementById('unlock-status');
+            if (val === GENESIS_KEY) {
+                status.innerText = "ACCESS_GRANTED // OPENING_UPLINK...";
+                setTimeout(() => {
+                    document.getElementById('unlock-gate').style.display = 'none';
+                    document.getElementById('terminal-content').style.opacity = '1';
+                    document.getElementById('terminal-content').style.pointerEvents = 'auto';
+                }, 1500);
+            } else {
+                status.innerText = "ERROR: INVALID_GENESIS_KEY";
+                status.style.color = "#ff0000";
             }
         }
 
-        // CONNECT HANDLER
-        document.getElementById('connect-btn').onclick = async () => {
-            document.getElementById('connect-section').classList.add('hidden');
-            document.getElementById('node-ui').classList.remove('hidden');
-            // Mocking a 550k balance for Founder Verification
-            await verifyTiers(550000);
-        };
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const d = TARGET_DATE - now;
+            document.getElementById("cd-days").innerText = Math.floor(d / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("cd-hours").innerText = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("cd-mins").innerText = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("cd-secs").innerText = Math.floor((d % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
 
-        // BASIN UPLINK
-        window.submitFeedback = async () => {
-            const status = document.getElementById('form-status');
-            const fileInput = document.getElementById('screenshot-input');
-            const desc = document.getElementById('issue-desc').value;
-            let imgUrl = "None";
-            
-            try {
-                status.innerText = "UPLOADING_EVIDENCE...";
-                if(fileInput.files.length > 0) {
-                    const uris = await upload({ client, files: [fileInput.files[0]] });
-                    imgUrl = uris[0].replace("ipfs://", "https://ipfs.io/ipfs/");
+        async function registerForEarlyBird() {
+            const btn = document.getElementById('eb-btn');
+            // Mock wallet check
+            const userWallet = "0xTEST_WALLET"; 
+            const { error } = await supabase.from('allowlist').insert([{ wallet_address: userWallet }]);
+            if(!error) btn.innerText = "SUCCESS: SECURED";
+            else btn.innerText = "ALREADY_REGISTERED";
+        }
+
+        async function sendSupportSignal() {
+            const msg = document.getElementById('support-msg').value;
+            const status = document.getElementById('sos-status');
+            if(!msg) return;
+            status.innerText = "TRANSMITTING...";
+            await fetch(DISCORD_WEBHOOK, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: `🚨 SOS: ${msg}` })
+            });
+            status.innerText = "SIGNAL_RECEIVED";
+        }
+
+        function toggleChat() { document.getElementById('chat-box').classList.toggle('hidden'); }
+        function closeModal() { document.getElementById('directive-modal').classList.add('hidden'); }
+        function viewDetails(id) {
+            const modal = document.getElementById('directive-modal');
+            document.getElementById('modal-title').innerText = sd000.title;
+            document.getElementById('modal-desc').innerText = sd000.longDesc;
+            document.getElementById('modal-id').innerText = `[${sd000.id}]`;
+            document.getElementById('whitepaper-link').classList.remove('hidden');
+            modal.classList.remove('hidden');
+        }
+
+        // --- ANALYTICS ---
+        function initCharts() {
+            const govCtx = document.getElementById('liveGovChart').getContext('2d');
+            new Chart(govCtx, {
+                type: 'doughnut',
+                data: { labels: ['Active', 'Review', 'Withdrawn'], datasets: [{ data: [12, 5, 2], backgroundColor: ['#4ade80', '#a855f7', '#991b1b'], borderWidth: 0 }] },
+                options: { cutout: '80%', plugins: { legend: { display: false } } }
+            });
+
+            const growthCtx = document.getElementById('growthChart').getContext('2d');
+            new Chart(growthCtx, {
+                type: 'line',
+                data: { labels: ['Feb 1', 'Feb 15', 'Mar 1', 'Mar 15'], datasets: [{ data: [10, 45, 80, 147], borderColor: '#a855f7', tension: 0.4 }] },
+                options: { 
+                    plugins: { 
+                        annotation: { annotations: { line1: { type: 'line', xMin: 3, xMax: 3, borderColor: '#4ade80', borderWidth: 2, label: { content: 'PHASE_1', display: true, position: 'start' } } } },
+                        legend: { display: false } 
+                    } 
                 }
-                
-                status.innerText = "TRANSMITTING_TO_BASIN...";
-                const res = await fetch(CONFIG.UPLINK_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ wallet: "Verified_Node", desc: desc, evidence: imgUrl })
-                });
-                if(res.ok) status.innerText = "SUCCESS: INTEL_SECURED";
-            } catch (e) { status.innerText = "ERROR: UPLINK_FAILED"; }
-        };
+            });
+        }
 
-        // CERTIFICATE
-        window.generateCertificate = async () => {
-            document.getElementById('cert-wallet').innerText = "0x88d5...fd0e";
-            const canvas = await html2canvas(document.getElementById('pioneer-certificate'));
-            const link = document.createElement('a');
-            link.download = 'Pioneer_Certificate.png';
-            link.href = canvas.toDataURL();
-            link.click();
+        // --- CONFETTI CELEBRATION ---
+        async function checkMilestone() {
+            const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+            if (count >= 50) {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#4ade80', '#fbbf24'] });
+            }
+        }
+
+        // --- BOOT ---
+        window.onload = () => {
+            initCharts();
+            setInterval(updateCountdown, 1000);
+            document.getElementById('proposal-list').innerHTML = `
+                <div class="border-2 border-green-500 p-5 bg-green-950/20">
+                    <div class="flex justify-between items-start">
+                        <div><p class="text-[6px] text-green-900 font-bold mb-1">[SD-000]</p><h4 class="text-xs text-white font-black uppercase">GENESIS_TREASURY_ALLOCATION</h4></div>
+                        <span class="text-[8px] text-purple-400 font-bold">SYSTEM_INIT</span>
+                    </div>
+                    <button onclick="viewDetails('SD-000')" class="w-full mt-4 border border-green-500 text-green-500 py-1 text-[8px] font-bold hover:bg-green-500 hover:text-black uppercase">READ_BLUEPRINT</button>
+                </div>`;
+            
+            // Maintenance check
+            if (process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true') {
+                document.getElementById('maintenance-overlay').classList.remove('hidden');
+            }
         };
     </script>
 </body>
-                        </html>
+</html>
