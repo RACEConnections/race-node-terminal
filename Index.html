@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMNIF R.A.C.E. Terminal</title>
+    <script type="module">
+        import { createThirdwebClient, getContract, prepareContractCall, sendTransaction, readContract, defineChain } from "https://esm.sh/thirdweb";
+
+        // 1. PROTOCOL CONFIGURATION
+        const CONFIG = {
+            CLIENT_ID: "763f242f0eaafeb788a2e494c956f183",
+            OMNIF: "0xc23F43FE5D5D65b0a094c8A8A712aBd4e820A210",
+            SHUB: "0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C",
+            CHAIN: defineChain(1116) // Core DAO Mainnet
+        };
+
+        const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
+
+        // 2. THE ANCHOR FUNCTION: Creating value on-chain
+        window.executeAnchor = async function() {
+            try {
+                const status = document.getElementById('status');
+                status.innerText = "ANCHORING PROTOCOL...";
+                
+                const contract = getContract({ 
+                    client, 
+                    address: CONFIG.OMNIF, 
+                    chain: CONFIG.CHAIN 
+                });
+
+                // Prepare the 'mint' transaction
+                const transaction = prepareContractCall({
+                    contract,
+                    method: "function mint(address to, uint256 amount)",
+                    params: [window.userAddress, BigInt(1 * 10**18)] // Mints 1.0 OMNIF
+                });
+
+                const { transactionHash } = await sendTransaction({
+                    transaction,
+                    account: window.activeAccount
+                });
+
+                status.innerText = "SUCCESS: " + transactionHash.slice(0,10) + "...";
+                syncBalances();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('status').innerText = "R.A.C.E. ERROR: REJECTED";
+            }
+        };
+
+        // 3. DUAL-TOKEN SYNC LOGIC
+        async function syncBalances() {
+            const omnif = getContract({ client, address: CONFIG.OMNIF, chain: CONFIG.CHAIN });
+            const shub = getContract({ client, address: CONFIG.SHUB, chain: CONFIG.CHAIN });
+
+            const [balO, balS] = await Promise.all([
+                readContract({ contract: omnif, method: "function balanceOf(address)", params: [window.userAddress] }),
+                readContract({ contract: shub, method: "function balanceOf(address)", params: [window.userAddress] })
+            ]);
+
+            document.getElementById('omnif-bal').innerText = (Number(balO)/1e18).toFixed(2) + " OMNF";
+            document.getElementById('shub-bal').innerText = (Number(balS)/1e18).toFixed(2) + " SHUB";
+        }
+
+        // Connect Wallet
+        window.connect = async function() {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            window.userAddress = accounts[0];
+            window.activeAccount = { address: accounts[0] };
+            document.getElementById('btn-connect').style.display = 'none';
+            document.getElementById('node-ui').style.display = 'block';
+            syncBalances();
+        };
+    </script>
+    <style>
+        body { background: #050505; color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; text-transform: uppercase; }
+        .terminal { border: 2px solid #00ff00; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px #00ff00; }
+        .token-row { display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid #004400; }
+        button { background: #00ff00; color: #000; border: none; padding: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        button:hover { background: #00cc00; }
+        #status { font-size: 0.8em; color: #888; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <h2>R.A.C.E. NODE V4.0</h2>
+        <p>ID: OLUFOLAMI_ADEOTI_CONNECT</p>
+        
+        <button id="btn-connect" onclick="connect()">INITIALIZE CONNECTIONS</button>
+
+        <div id="node-ui" style="display:none;">
+            <div class="token-row"><span>OMNIF (Utility)</span><span id="omnif-bal">0.00</span></div>
+            <div class="token-row"><span>SACIPHUB (Gov)</span><span id="shub-bal">0.00</span></div>
+            
+            <button onclick="executeAnchor()">EXECUTE ANCHOR PROTOCOL</button>
+            <div id="status">STANDING BY...</div>
+        </div>
+    </div>
+</body>
+  </html>
