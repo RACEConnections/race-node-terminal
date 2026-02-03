@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SACIPHUB R.A.C.E. Terminal</title>
+    <title>SACIPHUB R.A.C.E. Terminal v6.6</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -14,6 +14,7 @@
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-marquee { display: inline-flex; animation: marquee 25s linear infinite; }
         .tab-content { transition: opacity 0.3s ease-in-out; }
+        .gold-glow { box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
     </style>
 </head>
 <body class="min-h-screen pb-20 selection:bg-green-500 selection:text-black">
@@ -21,11 +22,11 @@
     <div class="w-full bg-green-950/20 border-b border-green-900 overflow-hidden py-1">
         <div class="flex animate-marquee whitespace-nowrap items-center">
             <span class="text-[8px] text-green-500 mx-8 uppercase tracking-widest">🏆 TOP_INTEL_NODES:</span>
-            <span class="text-[8px] text-white mx-4 font-bold">1. 0x88d5...fd0e [5 INTEL]</span>
-            <span class="text-[8px] text-white mx-4 font-bold">2. 0x2Ab7...C77C [3 INTEL]</span>
-            <span class="text-[8px] text-white mx-4 font-bold">3. 0x2554...07a1 [2 INTEL]</span>
+            <span class="text-[8px] text-white mx-4 font-bold">1. 0x88d5...fd0e [MARKET_MAKER]</span>
+            <span class="text-[8px] text-white/40 mx-4 font-bold italic">2. [OPEN_SLOT]</span>
+            <span class="text-[8px] text-white/40 mx-4 font-bold italic">3. [OPEN_SLOT]</span>
             <span class="text-[8px] text-green-500 mx-8 uppercase tracking-widest">🏆 TOP_INTEL_NODES:</span>
-            <span class="text-[8px] text-white mx-4 font-bold">1. 0x88d5...fd0e [5 INTEL]</span>
+            <span class="text-[8px] text-white mx-4 font-bold">1. 0x88d5...fd0e [MARKET_MAKER]</span>
         </div>
     </div>
 
@@ -52,66 +53,64 @@
         <div id="view-terminal" class="tab-content space-y-8">
             <div id="connect-section" class="text-center p-10 border border-dashed border-green-900 bg-green-950/5">
                 <p class="text-[10px] mb-4 text-green-700 uppercase tracking-widest italic">Node Handshake Required</p>
-                <button id="connect-btn" class="bg-green-600 text-black px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-green-400 transition-colors">Connect Node Wallet</button>
+                <button id="connect-btn" class="bg-green-600 text-black px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-green-400 transition-colors shadow-lg">Connect Node Wallet</button>
+                <div class="mt-4">
+                    <a href="#" class="text-[8px] text-green-900 underline hover:text-green-500 uppercase">Download_Onboarding_Manual.pdf</a>
+                </div>
             </div>
 
             <div id="node-ui" class="hidden space-y-6">
-                <div id="trophy-case" class="hidden flex flex-col items-center p-4 border border-yellow-500/30 bg-yellow-500/5 rounded animate-pulse">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-                    <p class="mt-2 text-[8px] font-bold text-yellow-500 uppercase tracking-widest">Contributor of the Month</p>
+                <div id="trophy-case" class="hidden flex flex-col items-center p-4 border border-yellow-500/30 bg-yellow-500/5 rounded gold-glow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                    <p class="mt-2 text-[8px] font-bold text-yellow-500 uppercase tracking-widest">Elite Pioneer Status</p>
                     <button onclick="generateCertificate()" class="mt-2 text-[7px] text-yellow-600 underline hover:text-yellow-400">DOWNLOAD_PIONEER_CERTIFICATE</button>
                 </div>
 
+                <section id="liquidity-engine" class="hidden border border-yellow-600 p-4 bg-yellow-950/10 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-[10px] text-yellow-500 font-bold uppercase">Liquidity Engine [v1.0]</h2>
+                        <span class="text-[7px] bg-yellow-600 text-black px-2 py-0.5 font-bold animate-pulse">ACTIVE_REWARDS</span>
+                    </div>
+                    <button onclick="window.open('https://archerswap.finance/add/CORE/0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C', '_blank')" class="w-full bg-yellow-600 text-black py-2 text-[9px] font-black uppercase hover:bg-yellow-400">Initialize_Liquidity_Pairing</button>
+                </section>
+
                 <section class="border border-green-900 p-4 bg-green-950/5">
-                    <h2 class="text-[10px] text-green-500 font-bold uppercase mb-4 flex justify-between">
-                        <span>Osogbo Digital Roadmap</span>
-                        <span class="text-[8px] text-green-800">Ver 1.0</span>
-                    </h2>
+                    <h2 class="text-[10px] text-green-500 font-bold uppercase mb-4">Osogbo Digital Roadmap</h2>
                     <div class="space-y-4 text-[8px]">
-                        <div class="pl-4 border-l border-green-500">
-                            <p class="text-green-400 font-bold">Phase 1: Foundation</p>
-                            <p class="text-green-900 italic">RACE Contract Deployed (0x2554...)</p>
-                        </div>
+                        <div class="pl-4 border-l border-green-500"><p class="text-green-400 font-bold">Phase 1: Foundation (100%)</p></div>
                         <div class="pl-4 border-l border-blue-500">
                             <p class="text-blue-400 font-bold">Phase 2: OMNIF Marketplace UAT</p>
-                            <div class="w-full bg-blue-900/20 h-1 mt-1"><div class="bg-blue-500 h-full" style="width: 45%"></div></div>
+                            <div class="w-full bg-blue-900/20 h-1 mt-1"><div class="bg-blue-500 h-full" style="width: 50%"></div></div>
                         </div>
                     </div>
                 </section>
 
                 <section id="feedback-hub" class="hidden border border-blue-900 p-4 bg-blue-950/5">
                     <h2 class="text-[10px] text-blue-400 font-bold uppercase mb-4">Intel Submission Hub</h2>
-                    <label class="text-[7px] text-blue-800 uppercase block mb-1 italic">IPFS Screenshot Evidence</label>
-                    <input type="file" id="screenshot-input" class="w-full text-[8px] mb-3 file:bg-blue-900 file:text-white file:border-none file:px-2 file:py-1 file:rounded cursor-pointer">
-                    <textarea id="issue-desc" placeholder="Operational intel, bug reports, or strategic feedback..." class="w-full bg-black border border-blue-900 p-2 text-[10px] h-20 outline-none focus:border-blue-400 text-blue-100"></textarea>
-                    <button onclick="submitFeedback()" class="w-full border border-blue-500 text-blue-400 py-2 text-[8px] mt-2 font-bold hover:bg-blue-500 hover:text-black transition-all">TRANSMIT_INTEL_TO_HQ</button>
+                    <input type="file" id="screenshot-input" class="w-full text-[8px] mb-3 text-blue-300">
+                    <textarea id="issue-desc" placeholder="Operational intel..." class="w-full bg-black border border-blue-900 p-2 text-[10px] h-20 outline-none text-blue-100"></textarea>
+                    <button onclick="submitFeedback()" class="w-full border border-blue-500 text-blue-400 py-2 text-[8px] mt-2 font-bold hover:bg-blue-500 hover:text-black">TRANSMIT_INTEL_TO_HQ</button>
                     <p id="form-status" class="text-[7px] mt-2 text-center italic text-blue-900 uppercase"></p>
                 </section>
             </div>
         </div>
 
-        <div id="view-wall" class="hidden space-y-4 animate-in fade-in duration-500">
-            <h2 class="text-[12px] text-yellow-500 font-bold uppercase text-center mb-6 tracking-widest">Hall of Pioneers</h2>
+        <div id="view-wall" class="hidden space-y-4">
+            <h2 class="text-[12px] text-yellow-500 font-bold uppercase text-center mb-6">Hall of Pioneers</h2>
             <div class="border border-yellow-900/30 p-4 bg-yellow-950/5 flex items-center space-x-4 rounded">
                 <span class="text-3xl">🏆</span>
                 <div>
                     <p class="text-[10px] text-yellow-500 font-bold">0x88d585bd60be1349dd1c6c217d27f87b0351fd0e</p>
-                    <p class="text-[8px] text-yellow-800 italic uppercase">"The Genesis Contributor. First to verify RACE logic on Core Mainnet."</p>
+                    <p class="text-[8px] text-yellow-800 italic uppercase">"The Genesis Contributor."</p>
                 </div>
             </div>
-            <p class="text-[7px] text-center text-yellow-900/40 uppercase mt-8 italic">Archive Verified via Founder Directive 001</p>
         </div>
     </main>
 
     <div id="pioneer-certificate" class="fixed -left-[3000px] w-[800px] h-[600px] bg-black border-[10px] border-yellow-600 p-10 flex flex-col items-center justify-between text-center">
-        <div class="border-2 border-yellow-900 w-full h-full p-8 flex flex-col justify-between items-center font-mono">
-            <h1 class="text-4xl text-yellow-500 font-bold uppercase tracking-widest">Pioneer Certificate</h1>
-            <p id="cert-wallet" class="text-xl text-white break-all px-10 font-bold">0x...</p>
-            <div class="space-y-2">
-                <p class="text-yellow-600 font-bold text-lg uppercase italic underline">Adeoti Olufolami</p>
-                <p class="text-green-900 text-xs">FOUNDER SIGNATURE | FEB 2026</p>
-            </div>
-        </div>
+        <h1 class="text-4xl text-yellow-500 font-bold uppercase">Pioneer Certificate</h1>
+        <p id="cert-wallet" class="text-xl text-white break-all px-10">0x...</p>
+        <p class="text-green-500">Issued by Founder Adeoti Olufolami - Feb 2026</p>
     </div>
 
     <script type="module">
@@ -120,32 +119,21 @@
 
         const CONFIG = {
             CLIENT_ID: "22de494f12ad3df515718d82997e30bd",
-            UPLINK_URL: "https://usebasin.com/f/cd284f12af06",
+            UPLINK_URL: "https://usebasin.com/f/cd284f12af06", // Verified Basin ID
             EVENT_DATE: new Date("March 15, 2026 10:00:00").getTime(),
-            OWNER: "0x88d585bd60be1349dd1c6c217d27f87b0351fd0e"
+            SHUB_CONTRACT: "0x2Ab76FC9f98434E119A16c9634cD9eFd2B92C77C"
         };
 
         const client = createThirdwebClient({ clientId: CONFIG.CLIENT_ID });
         window.client = client;
 
-        // NAVIGATION
+        // TAB SYSTEM
         window.switchTab = (tab) => {
             document.getElementById('view-terminal').classList.toggle('hidden', tab !== 'terminal');
             document.getElementById('view-wall').classList.toggle('hidden', tab !== 'wall');
-            
-            const termBtn = document.getElementById('tab-terminal');
-            const wallBtn = document.getElementById('tab-wall');
-            
-            if(tab === 'terminal') {
-                termBtn.className = "text-[10px] font-bold text-green-500 border-b-2 border-green-500 pb-1";
-                wallBtn.className = "text-[10px] font-bold text-green-900 hover:text-green-500 transition-all";
-            } else {
-                wallBtn.className = "text-[10px] font-bold text-yellow-500 border-b-2 border-yellow-500 pb-1";
-                termBtn.className = "text-[10px] font-bold text-green-900 hover:text-green-500 transition-all";
-            }
         };
 
-        // TIMER LOGIC
+        // COUNTDOWN
         setInterval(() => {
             const now = new Date().getTime();
             const distance = CONFIG.EVENT_DATE - now;
@@ -156,64 +144,56 @@
             }
         }, 1000);
 
-        // BASIN INTEL SUBMISSION
+        // GATING LOGIC (MOCKED FOR INITIAL LOAD)
+        async function verifyTiers(balance) {
+            if(balance >= 100000) document.getElementById('feedback-hub').classList.remove('hidden');
+            if(balance >= 500000) {
+                document.getElementById('liquidity-engine').classList.remove('hidden');
+                document.getElementById('trophy-case').classList.remove('hidden');
+            }
+        }
+
+        // CONNECT HANDLER
+        document.getElementById('connect-btn').onclick = async () => {
+            document.getElementById('connect-section').classList.add('hidden');
+            document.getElementById('node-ui').classList.remove('hidden');
+            // Mocking a 550k balance for Founder Verification
+            await verifyTiers(550000);
+        };
+
+        // BASIN UPLINK
         window.submitFeedback = async () => {
             const status = document.getElementById('form-status');
             const fileInput = document.getElementById('screenshot-input');
             const desc = document.getElementById('issue-desc').value;
-            let imgUrl = "No Evidence Uploaded";
+            let imgUrl = "None";
             
-            if(!desc) { status.innerText = "ERROR: INTEL_DESCRIPTION_EMPTY"; return; }
-
             try {
-                status.innerText = "INITIALIZING_SECURE_UPLINK...";
+                status.innerText = "UPLOADING_EVIDENCE...";
                 if(fileInput.files.length > 0) {
-                    status.innerText = "PINNING_EVIDENCE_TO_IPFS...";
                     const uris = await upload({ client, files: [fileInput.files[0]] });
                     imgUrl = uris[0].replace("ipfs://", "https://ipfs.io/ipfs/");
                 }
                 
-                status.innerText = "TRANSMITTING_TO_BASIN_RELAY...";
-                const response = await fetch(CONFIG.UPLINK_URL, {
+                status.innerText = "TRANSMITTING_TO_BASIN...";
+                const res = await fetch(CONFIG.UPLINK_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                    body: JSON.stringify({ 
-                        wallet: window.userAddress || "Anonymous_Node", 
-                        intel: desc, 
-                        evidence: imgUrl,
-                        system: "RACE_TERMINAL_V6.5"
-                    })
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ wallet: "Verified_Node", desc: desc, evidence: imgUrl })
                 });
-
-                if (response.ok) {
-                    status.innerText = "SUCCESS: INTEL_SECURED_BY_HQ";
-                    document.getElementById('issue-desc').value = "";
-                    fileInput.value = "";
-                } else { throw new Error("Basin Handshake Failure"); }
-            } catch (e) { 
-                console.error(e);
-                status.innerText = "CRITICAL_ERROR: UPLINK_INTERRUPTED"; 
-            }
+                if(res.ok) status.innerText = "SUCCESS: INTEL_SECURED";
+            } catch (e) { status.innerText = "ERROR: UPLINK_FAILED"; }
         };
 
-        // CERTIFICATE LOGIC
+        // CERTIFICATE
         window.generateCertificate = async () => {
-            document.getElementById('cert-wallet').innerText = window.userAddress || CONFIG.OWNER;
-            const canvas = await html2canvas(document.getElementById('pioneer-certificate'), { scale: 2 });
+            document.getElementById('cert-wallet').innerText = "0x88d5...fd0e";
+            const canvas = await html2canvas(document.getElementById('pioneer-certificate'));
             const link = document.createElement('a');
-            link.download = `SACIPHUB_Pioneer_${(window.userAddress || 'Elite').slice(0,6)}.png`;
+            link.download = 'Pioneer_Certificate.png';
             link.href = canvas.toDataURL();
             link.click();
         };
-
-        // MOCK CONNECT: UNLOCKS ALL TIERS FOR TESTING
-        document.getElementById('connect-btn').onclick = () => {
-            document.getElementById('connect-section').classList.add('hidden');
-            document.getElementById('node-ui').classList.remove('hidden');
-            document.getElementById('feedback-hub').classList.remove('hidden'); 
-            document.getElementById('trophy-case').classList.remove('hidden'); 
-            window.userAddress = CONFIG.OWNER; // Sets session to your wallet
-        };
     </script>
 </body>
-                </html>
+                        </html>
