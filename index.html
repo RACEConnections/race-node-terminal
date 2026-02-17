@@ -7,9 +7,9 @@
     <style>
         /* --- GLOBAL MILITARY AESTHETIC --- */
         body {
-            background-color: #020b1c;
-            color: #D4AF37;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #020b1c; /* Deep Navy */
+            color: #D4AF37; /* R.A.C.E. Gold */
+            font-family: 'Courier New', Courier, monospace; /* Terminal Font */
             margin: 0;
             padding: 0;
             display: flex;
@@ -53,11 +53,11 @@
         }
         .status {
             font-size: 12px;
-            color: #00ff00;
+            color: #00ff00; /* Cyber Green */
             margin-bottom: 20px;
         }
 
-        /* --- THE "CODE-ONLY" RADAR GRID (Fail-Proof) --- */
+        /* --- PROTOCOL ZERO: CODE-ONLY RADAR (INSTANT LOAD) --- */
         .radar-container {
             height: 250px;
             width: 100%;
@@ -67,10 +67,11 @@
             margin-bottom: 25px;
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
             background-color: #000;
+            /* Creates the Tactical Grid Pattern */
             background-image: 
                 linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px; /* Creates the Grid */
+            background-size: 20px 20px; 
             position: relative;
             display: flex;
             justify-content: center;
@@ -89,13 +90,16 @@
         }
 
         .radar-text {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #D4AF37;
-            background-color: rgba(0,0,0,0.7);
-            padding: 10px;
+            background-color: rgba(0,0,0,0.8);
+            padding: 8px 15px;
             border: 1px solid #D4AF37;
             z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         @keyframes scan { 0% { top: -100%; } 100% { top: 100%; } }
@@ -125,9 +129,14 @@
             align-items: center;
         }
 
-        .btn:active {
+        .btn:hover {
             background: #D4AF37;
-            color: #000;
+            color: #020b1c;
+            box-shadow: 0 0 15px #D4AF37;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .footer {
@@ -152,17 +161,17 @@
 
         <div class="radar-container">
             <div class="scan-line"></div>
-            <div class="radar-text">WAITING FOR SIGNAL...</div>
+            <div class="radar-text">● SECURE UPLINK ESTABLISHED</div>
         </div>
 
         <div class="btn-grid">
             
-            <a href="https://race-terminal-001.glide.page/" class="btn">
+            <a href="https://race-terminal-00.glide.page" class="btn">
                 LAUNCH OPS TERMINAL
                 <span>🚀</span>
             </a>
 
-            <a href="https://race-node-terminal.vercel.app/" class="btn">
+            <a href="https://saciphub.carrd.co" class="btn">
                 ACCESS TOKEN VAULT ($RACE)
                 <span>🔒</span>
             </a>
@@ -181,7 +190,4 @@
     </div>
 
 </body>
-</html>    </div>
-
-</body>
-    </html>
+                                                                                              </html>
