@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. LLC | LIVE CRYPTO SPACE</title>
+    <title>R.A.C.E. LLC | SECURE TERMINAL</title>
     <style>
         /* --- GLOBAL MILITARY AESTHETIC --- */
         body {
-            background-color: #020b1c; /* Deep Navy */
-            color: #D4AF37; /* R.A.C.E. Gold */
-            font-family: 'Courier New', Courier, monospace; /* Terminal Font */
+            background-color: #020b1c;
+            color: #D4AF37;
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
             display: flex;
@@ -25,11 +25,15 @@
             border-bottom: 2px solid #D4AF37;
             padding: 10px 0;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .ticker-text {
             font-weight: bold;
             font-size: 14px;
             letter-spacing: 1px;
+            padding-top: 5px;
         }
 
         /* --- MAIN CONTAINER --- */
@@ -40,7 +44,6 @@
             padding-top: 20px;
         }
 
-        /* --- HEADER --- */
         h1 {
             font-size: 24px;
             text-transform: uppercase;
@@ -50,22 +53,30 @@
         }
         .status {
             font-size: 12px;
-            color: #00ff00; /* Cyber Green */
+            color: #00ff00;
             margin-bottom: 20px;
         }
 
-        /* --- LIVE CHART (TRADINGVIEW) --- */
+        /* --- TACTICAL CHART (GIF MODE) --- */
         .chart-container {
-            height: 350px;
+            height: 250px; /* Compact Size */
             width: 100%;
             border: 1px solid #D4AF37;
             border-radius: 5px;
             overflow: hidden;
             margin-bottom: 25px;
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
-            /* LOADING SPINNER FIX */
-            background: #000 url('https://i.gifer.com/ZKZg.gif') no-repeat center center;
-            background-size: 50px;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .chart-gif {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
         }
 
         /* --- COMMAND BUTTONS --- */
@@ -74,37 +85,32 @@
             flex-direction: column;
             gap: 15px;
             width: 100%;
+            padding-bottom: 30px;
         }
 
         .btn {
-            background: rgba(2, 11, 28, 0.9);
+            background: rgba(2, 11, 28, 0.95);
             border: 2px solid #D4AF37;
             color: #D4AF37;
-            padding: 15px;
+            padding: 18px;
             font-size: 16px;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .btn:hover {
+        .btn:active {
             background: #D4AF37;
-            color: #020b1c;
-            box-shadow: 0 0 15px #D4AF37;
+            color: #000;
         }
 
-        .btn span {
-            font-size: 20px;
-        }
-
-        /* --- FOOTER --- */
         .footer {
-            margin-top: 40px;
+            margin-top: 20px;
             font-size: 10px;
             opacity: 0.7;
             padding-bottom: 20px;
@@ -115,7 +121,7 @@
 
     <div class="ticker-wrap">
         <marquee class="ticker-text" scrollamount="6">
-            🔴 <strong>LIVE FEED:</strong> BTC DOMINANCE RISING /// <strong>R.A.C.E. ALERT:</strong> UNIT 004 CLEARED ₦150K PROFIT /// <strong>SYSTEM:</strong> GHOST CARDS NOW ISSUING AT FINANCIAL TRADE CENTRE /// <strong>STATUS:</strong> SECURE NODE ACTIVE...
+            🔴 <strong>LIVE FEED:</strong> BTC DOMINANCE RISING /// <strong>R.A.C.E. ALERT:</strong> UNIT 004 CLEARED ₦150K PROFIT /// <strong>SYSTEM:</strong> GHOST CARDS NOW ISSUING...
         </marquee>
     </div>
 
@@ -124,29 +130,8 @@
         <div class="status">● SYSTEM ONLINE | VCI SECURE | OMNIF CONNECTED</div>
 
         <div class="chart-container">
-            <div class="tradingview-widget-container">
-                <div id="tradingview_12345"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript">
-                new TradingView.widget(
-                {
-                "autosize": true,
-                "symbol": "BINANCE:BTCUSDT",
-                "interval": "D",
-                "timezone": "Africa/Lagos",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "hide_top_toolbar": true,
-                "save_image": false,
-                "container_id": "tradingview_12345"
-                }
-                );
-                </script>
-            </div>
-            </div>
+            <img src="https://media1.giphy.com/media/Lp71UWmAAeJHi/giphy.gif" alt="Live Chart" class="chart-gif">
+        </div>
 
         <div class="btn-grid">
             
@@ -160,7 +145,7 @@
                 <span>🔒</span>
             </a>
 
-            <a href="https://wa.me/234[YOUR_NUMBER]" class="btn">
+            <a href="https://wa.me/2348145464257" class="btn">
                 CONTACT LIAISON (LIVE)
                 <span>📡</span>
             </a>
@@ -169,10 +154,9 @@
 
         <div class="footer">
             R.A.C.E. LLC [REGISTRY OF ASSETS, CONNECTIONS, ENGINEERING]<br>
-            COPYRIGHT © 2026 | GHOST PROTOCOL ACTIVE<br>
             ID: RACE-00-ARC-000
         </div>
     </div>
 
 </body>
-</html>
+                                                                           </html>
