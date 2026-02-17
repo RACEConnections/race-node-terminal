@@ -7,187 +7,107 @@
     <style>
         /* --- GLOBAL MILITARY AESTHETIC --- */
         body {
-            background-color: #020b1c; /* Deep Navy */
-            color: #D4AF37; /* R.A.C.E. Gold */
-            font-family: 'Courier New', Courier, monospace; /* Terminal Font */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #020b1c;
+            color: #D4AF37;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* --- THE VIRAL TICKER --- */
         .ticker-wrap {
-            width: 100%;
-            background-color: #000;
-            border-bottom: 2px solid #D4AF37;
-            padding: 10px 0;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            width: 100%; background-color: #000; border-bottom: 2px solid #D4AF37;
+            padding: 10px 0; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            position: absolute; top: 0; z-index: 100;
         }
-        .ticker-text {
-            font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 1px;
-            padding-top: 5px;
-        }
+        .ticker-text { font-weight: bold; font-size: 14px; letter-spacing: 1px; }
 
-        /* --- MAIN CONTAINER --- */
-        .container {
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-            padding-top: 20px;
-        }
+        .container { width: 90%; max-width: 500px; text-align: center; }
 
-        h1 {
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            text-shadow: 0 0 10px #D4AF37;
-        }
-        .status {
-            font-size: 12px;
-            color: #00ff00; /* Cyber Green */
-            margin-bottom: 20px;
-        }
+        h1 { font-size: 32px; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 5px; text-shadow: 0 0 15px #D4AF37; }
+        .status { font-size: 12px; color: #00ff00; margin-bottom: 30px; letter-spacing: 1px; }
 
-        /* --- PROTOCOL ZERO: CODE-ONLY RADAR (INSTANT LOAD) --- */
+        /* --- THE RADAR GRID --- */
         .radar-container {
-            height: 250px;
-            width: 100%;
-            border: 1px solid #D4AF37;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 25px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+            height: 250px; width: 100%; border: 1px solid #D4AF37; border-radius: 5px;
+            overflow: hidden; margin-bottom: 40px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
             background-color: #000;
-            /* Creates the Tactical Grid Pattern */
             background-image: 
                 linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px; 
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-size: 25px 25px; position: relative;
+            display: flex; justify-content: center; align-items: center;
         }
-
-        /* The Moving Scanner Line */
         .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent 50%, rgba(212, 175, 55, 0.3) 51%, transparent 52%);
-            animation: scan 3s linear infinite;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(212, 175, 55, 0.4) 51%, transparent 52%);
+            animation: scan 4s linear infinite;
         }
-
         .radar-text {
-            font-size: 16px;
-            font-weight: bold;
-            color: #D4AF37;
-            background-color: rgba(0,0,0,0.8);
-            padding: 8px 15px;
-            border: 1px solid #D4AF37;
-            z-index: 10;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            font-size: 16px; font-weight: bold; color: #D4AF37;
+            background-color: rgba(0,0,0,0.9); padding: 12px 20px;
+            border: 1px solid #D4AF37; z-index: 10; letter-spacing: 2px;
         }
-
         @keyframes scan { 0% { top: -100%; } 100% { top: 100%; } }
 
-        /* --- COMMAND BUTTONS --- */
-        .btn-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            padding-bottom: 30px;
-        }
+        /* --- THE SINGULAR ACTION BUTTON --- */
+        .btn-container { width: 100%; }
 
-        .btn {
-            background: rgba(2, 11, 28, 0.95);
-            border: 2px solid #D4AF37;
-            color: #D4AF37;
-            padding: 18px;
-            font-size: 16px;
-            font-weight: bold;
+        .btn-launch {
+            background: #D4AF37;
+            color: #020b1c;
+            border: none;
+            padding: 25px;
+            font-size: 18px;
+            font-weight: 900;
             text-transform: uppercase;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            transition: all 0.3s ease;
+            display: block;
+            letter-spacing: 3px;
+            box-shadow: 0 0 20px #D4AF37;
         }
 
-        .btn:hover {
-            background: #D4AF37;
-            color: #020b1c;
-            box-shadow: 0 0 15px #D4AF37;
+        .btn-launch:hover {
+            background: #fff;
+            box-shadow: 0 0 40px #fff;
+            transform: scale(1.02);
         }
 
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .footer {
-            margin-top: 20px;
-            font-size: 10px;
-            opacity: 0.7;
-            padding-bottom: 20px;
-        }
+        .footer { margin-top: 30px; font-size: 10px; opacity: 0.6; letter-spacing: 1px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div class="ticker-wrap">
         <marquee class="ticker-text" scrollamount="6">
-            🔴 <strong>LIVE FEED:</strong> BTC DOMINANCE RISING /// <strong>R.A.C.E. ALERT:</strong> UNIT 004 CLEARED ₦150K PROFIT /// <strong>SYSTEM:</strong> GHOST CARDS NOW ISSUING...
+            🔴 <strong>NETWORK ALERT:</strong> SACIPHUB/OMNIF ASSETS CONSOLIDATED INTO $RACE /// <strong>LIQUIDITY:</strong> SECURED /// <strong>SYSTEM:</strong> STANDBY FOR OPS UPLINK...
         </marquee>
     </div>
 
     <div class="container">
-        <h1>R.A.C.E. LLC</h1>
-        <div class="status">● SYSTEM ONLINE | VCI SECURE | OMNIF CONNECTED</div>
+        <h1>$RACE TERMINAL</h1>
+        <div class="status">● AUTHORIZED ACCESS ONLY | PROTOCOL 1.0</div>
 
         <div class="radar-container">
             <div class="scan-line"></div>
-            <div class="radar-text">● SECURE UPLINK ESTABLISHED</div>
+            <div class="radar-text">IDENTIFYING TARGET...</div>
         </div>
 
-        <div class="btn-grid">
-            
-            <a href="https://race-terminal-00.glide.page" class="btn">
-                LAUNCH OPS TERMINAL
-                <span>🚀</span>
+        <div class="btn-container">
+            <a href="https://race-terminal-00.glide.page" class="btn-launch">
+                INITIALIZE OPS
             </a>
-
-            <a href="https://saciphub.carrd.co" class="btn">
-                ACCESS TOKEN VAULT ($RACE)
-                <span>🔒</span>
-            </a>
-
-            <a href="https://wa.me/2348145464257" class="btn">
-                CONTACT LIAISON (LIVE)
-                <span>📡</span>
-            </a>
-
         </div>
 
         <div class="footer">
             R.A.C.E. LLC [REGISTRY OF ASSETS, CONNECTIONS, ENGINEERING]<br>
-            ID: RACE-00-ARC-000
+            SECURE NODE: ARC-001 | $RACE TOKEN CORE
         </div>
     </div>
 
 </body>
-                                                                                              </html>
+</html>
