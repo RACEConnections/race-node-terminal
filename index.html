@@ -3,111 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. LLC | SECURE TERMINAL</title>
+    <title>$RACE | SOVEREIGN PROTOCOL</title>
     <style>
-        /* --- GLOBAL MILITARY AESTHETIC --- */
-        body {
-            background-color: #020b1c;
-            color: #D4AF37;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh;
-            overflow: hidden;
+        :root { --gold: #D4AF37; --navy: #020b1c; --green: #00ff00; }
+        body { background: var(--navy); color: var(--gold); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .terminal-header { width: 100%; background: #000; padding: 20px 0; border-bottom: 2px solid var(--gold); text-align: center; position: sticky; top: 0; z-index: 100; }
+        .container { width: 90%; max-width: 500px; padding: 30px 0; }
+        
+        /* THE TRACK SEQUENCE */
+        section { margin-bottom: 50px; border-left: 2px solid rgba(212, 175, 55, 0.3); padding-left: 20px; }
+        .step-id { font-size: 10px; color: var(--green); letter-spacing: 2px; }
+        h2 { font-size: 20px; text-transform: uppercase; margin: 10px 0; }
+        
+        /* INTAKE BOX STYLING */
+        .intake-box { 
+            background: rgba(212, 175, 55, 0.05); 
+            border: 1px solid var(--gold); 
+            padding: 40px 20px; 
+            margin-top: 20px; 
+            text-align: center;
         }
-
-        /* --- THE VIRAL TICKER --- */
-        .ticker-wrap {
-            width: 100%; background-color: #000; border-bottom: 2px solid #D4AF37;
-            padding: 10px 0; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-            position: absolute; top: 0; z-index: 100;
-        }
-        .ticker-text { font-weight: bold; font-size: 14px; letter-spacing: 1px; }
-
-        .container { width: 90%; max-width: 500px; text-align: center; }
-
-        h1 { font-size: 32px; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 5px; text-shadow: 0 0 15px #D4AF37; }
-        .status { font-size: 12px; color: #00ff00; margin-bottom: 30px; letter-spacing: 1px; }
-
-        /* --- THE RADAR GRID --- */
-        .radar-container {
-            height: 250px; width: 100%; border: 1px solid #D4AF37; border-radius: 5px;
-            overflow: hidden; margin-bottom: 40px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
-            background-color: #000;
-            background-image: 
-                linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
-            background-size: 25px 25px; position: relative;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .scan-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, transparent 50%, rgba(212, 175, 55, 0.4) 51%, transparent 52%);
-            animation: scan 4s linear infinite;
-        }
-        .radar-text {
-            font-size: 16px; font-weight: bold; color: #D4AF37;
-            background-color: rgba(0,0,0,0.9); padding: 12px 20px;
-            border: 1px solid #D4AF37; z-index: 10; letter-spacing: 2px;
-        }
-        @keyframes scan { 0% { top: -100%; } 100% { top: 100%; } }
-
-        /* --- THE SINGULAR ACTION BUTTON --- */
-        .btn-container { width: 100%; }
-
-        .btn-launch {
-            background: #D4AF37;
-            color: #020b1c;
-            border: none;
-            padding: 25px;
-            font-size: 18px;
-            font-weight: 900;
-            text-transform: uppercase;
-            cursor: pointer;
+        
+        .btn-strike { 
+            width: 100%; 
+            background: var(--gold); 
+            color: #000; 
+            border: none; 
+            padding: 18px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            cursor: pointer; 
             text-decoration: none;
-            transition: all 0.3s ease;
-            display: block;
-            letter-spacing: 3px;
-            box-shadow: 0 0 20px #D4AF37;
+            display: inline-block;
+            letter-spacing: 2px;
+            box-sizing: border-box;
         }
-
-        .btn-launch:hover {
-            background: #fff;
-            box-shadow: 0 0 40px #fff;
-            transform: scale(1.02);
+        
+        .btn-strike:hover { 
+            background: #fff; 
+            box-shadow: 0 0 15px #fff; 
+            color: #000;
         }
-
-        .footer { margin-top: 30px; font-size: 10px; opacity: 0.6; letter-spacing: 1px; line-height: 1.5; }
+        
+        .footer { font-size: 9px; opacity: 0.4; text-align: center; margin-top: 40px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="ticker-wrap">
-        <marquee class="ticker-text" scrollamount="6">
-            🔴 <strong>NETWORK ALERT:</strong> SACIPHUB/OMNIF ASSETS CONSOLIDATED INTO $RACE /// <strong>LIQUIDITY:</strong> SECURED /// <strong>SYSTEM:</strong> STANDBY FOR OPS UPLINK...
-        </marquee>
-    </div>
+<div class="terminal-header">
+    <strong>$RACE // ONE-WAY STREAM</strong>
+</div>
 
-    <div class="container">
-        <h1>$RACE TERMINAL</h1>
-        <div class="status">● AUTHORIZED ACCESS ONLY | PROTOCOL 1.0</div>
+<div class="container">
 
-        <div class="radar-container">
-            <div class="scan-line"></div>
-            <div class="radar-text">IDENTIFYING TARGET...</div>
-        </div>
+    <section>
+        <div class="step-id">PHASE 01: INITIATION</div>
+        <h2>THE SCAN</h2>
+        <p>Analyzing global price inefficiencies. <br><small>[NODE ARC-001 ACTIVE]</small></p>
+    </section>
 
-        <div class="btn-container">
-            <a href="https://race-terminal-00.glide.page" class="btn-launch">
-                INITIALIZE OPS
+    <section>
+        <div class="step-id">PHASE 02: EXECUTION</div>
+        <h2>ARBITRAGE STRIKE ⚡</h2>
+        <p>Funding + Intelligence convergence. One-way capital flow secured via $RACE Core.</p>
+    </section>
+
+    <section>
+        <div class="step-id">PHASE 03: ARCHITECTURE</div>
+        <h2>PKG 4 & 6</h2>
+        <p>Sovereign Logic: Intake (4) ➔ Verified Output (6). <br><strong>GUARANTEED NO-PONZI ARCHITECTURE.</strong></p>
+    </section>
+
+    <section id="service">
+        <div class="step-id">PHASE 04: SERVICE INTAKE</div>
+        <h2>INITIALIZE STREAM</h2>
+        <p>Submit coordinates for system clearance and manual verification.</p>
+        
+        <div class="intake-box">
+            <p style="font-size: 11px; margin-bottom: 25px; opacity: 0.7; letter-spacing: 1px;">
+                SECURE ENCRYPTED UPLINK VIA GOOGLE CLOUD NODES
+            </p>
+            
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdF7shXRu3tDfaCgn9sU0FachF5fCwj7KDlR4lBNJVkM0sy9Q/viewform?usp=pp_url" target="_blank" class="btn-strike">
+                OPEN SECURE INTAKE
             </a>
         </div>
+    </section>
 
-        <div class="footer">
-            R.A.C.E. LLC [REGISTRY OF ASSETS, CONNECTIONS, ENGINEERING]<br>
-            SECURE NODE: ARC-001 | $RACE TOKEN CORE
-        </div>
+    <div class="footer">
+        R.A.C.E. LLC | DATA COLLECTED IS CLASSIFIED AND SECURE.<br>
+        © 2026 SOVEREIGN TRACK SERVICE
     </div>
+</div>
 
 </body>
-</html>
+            </html>
