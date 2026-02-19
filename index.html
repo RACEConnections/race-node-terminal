@@ -3,85 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNIF BLACK // SOVEREIGN TERMINAL</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <title>OMNIF BLACK // TERMINAL</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
     <style>
-        :root { --navy: #020b1c; --gold: #D4AF37; --green: #00ff00; --red: #ff3333; }
-        body, html { margin: 0; padding: 0; background: var(--navy); color: #fff; font-family: 'Courier New', monospace; overflow-x: hidden; }
-        .film-grain { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; opacity: 0.04; background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png'); animation: noise 0.2s infinite alternate; }
-        @keyframes noise { 0% { transform: translate(0, 0); } 100% { transform: translate(-5px, 5px); } }
-        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-        .header-title { text-align: center; color: var(--gold); letter-spacing: 4px; border-bottom: 1px solid var(--gold); padding-bottom: 20px; margin-bottom: 40px; }
-        .intake-box { background: rgba(212, 175, 55, 0.05); border: 1px solid var(--gold); padding: 30px; text-align: center; margin-bottom: 30px; }
-        .btn-primary { width: 100%; background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 15px; font-weight: bold; letter-spacing: 2px; cursor: pointer; font-family: inherit; }
-        #progress-container { display: none; width: 100%; height: 6px; background: #020b1c; border: 1px solid #333; margin-top: 20px; }
-        #progress-fill { width: 0%; height: 100%; background: var(--gold); transition: width 0.5s; box-shadow: 0 0 10px var(--gold); }
-        #terminal-readout { margin-top: 15px; font-size: 10px; color: var(--gold); display: none; text-transform: uppercase; }
-        #legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(2, 11, 28, 0.98); z-index: 99999; justify-content: center; align-items: center; }
-        .dossier-body { background: #000; border: 1px solid var(--gold); width: 90%; max-width: 600px; height: 80vh; overflow-y: auto; padding: 30px; font-size: 12px; line-height: 1.6; }
+        :root { --navy: #020b1c; --gold: #D4AF37; --green: #00ff00; }
+        body { background: var(--navy); color: #fff; font-family: 'Courier New', monospace; text-align: center; margin: 0; }
+        .container { padding: 50px 20px; max-width: 600px; margin: 0 auto; }
+        .intake-box { border: 1px solid var(--gold); padding: 20px; margin-bottom: 20px; background: rgba(212,175,55,0.05); }
+        .btn { background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 15px 30px; cursor: pointer; width: 100%; font-weight: bold; }
+        #legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,11,28,0.98); z-index: 999; justify-content: center; align-items: center; }
+        .dossier { background: #000; border: 1px solid var(--gold); padding: 30px; width: 80%; max-height: 70vh; overflow-y: auto; text-align: left; font-size: 13px; }
     </style>
 </head>
 <body>
-    <div class="film-grain"></div>
     <div class="container">
-        <h1 class="header-title">OMNIF BLACK // TERMINAL</h1>
-        
-        <div class="intake-box" style="border-color: var(--green);">
-            <h3 style="color: var(--green); margin-top: 0;">EXECUTIVE MATRIX UPLINK</h3>
-            <a href="YOUR_GOOGLE_FORM_URL" target="_blank" style="text-decoration: none;">
-                <button class="btn-primary" style="border-color: var(--green); color: var(--green);">INITIALIZE HANDSHAKE >></button>
-            </a>
-        </div>
-
+        <h1 style="color:var(--gold); letter-spacing: 5px;">OMNIF BLACK</h1>
         <div class="intake-box">
-            <h3 style="color: var(--gold); margin-top: 0;">ASSET MIGRATION BRIDGE</h3>
-            <button id="btn-migrate" onclick="executeMatrixMigration()" class="btn-primary">START 1:1 CONVERSION</button>
-            <div id="progress-container"><div id="progress-fill"></div></div>
-            <div id="terminal-readout">/// STANDBY...</div>
-        </div>
-
-        <div style="text-align: center; font-size: 10px; color: #555; cursor: pointer;" onclick="openLegal()">
-            [ VIEW OPERATIONAL MANDATE ]
+            <button class="btn" onclick="connectWallet()">INITIALIZE HANDSHAKE</button>
+            <p id="status" style="font-size: 10px; margin-top: 10px; color: var(--gold);">/// SYSTEM READY</p>
         </div>
     </div>
 
-    <div id="legal-modal">
-        <div class="dossier-body">
-            <span style="float: right; color: var(--gold); cursor: pointer;" onclick="closeLegal()">[X]</span>
-            <h2 style="color: var(--gold);">LEGAL VAULT</h2>
-            <p><strong>RISK:</strong> Digital logistics carry inherent volatility. Target yield is a projection, not a guarantee.</p>
-            <p><strong>PRIVACY:</strong> Zero-knowledge data architecture deployed.</p>
+    <div id="legal-modal" onclick="closeLegal()">
+        <div class="dossier" onclick="event.stopPropagation()">
+            <h2 style="color:var(--gold)">OPERATIONAL MANDATE</h2>
+            <p>Risk: Market volatility. Yield is a projection.</p>
+            <button class="btn" onclick="closeLegal()">CLOSE VAULT</button>
         </div>
     </div>
 
     <script>
-        // AUTO-TRIGGER LEGAL VAULT FROM CARRD
-        window.onload = function() { if (window.location.hash === '#legal') openLegal(); };
+        // FORCED HASH LISTENER (Fixes Carrd TC Link)
+        function checkHash() { if (window.location.hash === '#legal') openLegal(); }
+        window.addEventListener('hashchange', checkHash);
+        window.addEventListener('load', checkHash);
+
         function openLegal() { document.getElementById('legal-modal').style.display = 'flex'; }
         function closeLegal() { document.getElementById('legal-modal').style.display = 'none'; }
 
-        async function executeMatrixMigration() {
-            const readout = document.getElementById("terminal-readout");
-            const fill = document.getElementById("progress-fill");
+        // HARDENED HANDSHAKE
+        async function connectWallet() {
+            const status = document.getElementById('status');
             try {
-                if (!window.ethereum) throw new Error("WALLET NOT DETECTED");
-                document.getElementById("progress-container").style.display = "block";
-                readout.style.display = "block";
-                
-                // MOCK LOGIC FOR TESTING (REPLACE WITH ETHERS LOGIC ONCE CONTRACTS ARE LIVE)
-                fill.style.width = "40%";
-                readout.innerHTML = "/// AUTHORIZING HANDSHAKE...";
-                // await tx.wait()...
-                
-                fill.style.width = "100%";
-                fill.style.backgroundColor = "#00ff00";
-                readout.style.color = "#00ff00";
-                readout.innerHTML = "/// MIGRATION SUCCESSFUL.";
-            } catch (e) {
-                readout.style.color = "#ff3333";
-                readout.innerHTML = `/// ERROR: ${e.message}`;
+                if (!window.ethereum) throw new Error("VAULT NOT DETECTED (INSTALL METAMASK)");
+                status.innerHTML = "/// REQUESTING PERMISSION...";
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                status.style.color = "var(--green)";
+                status.innerHTML = "/// HANDSHAKE VERIFIED. READY FOR MIGRATION.";
+            } catch (err) {
+                status.style.color = "red";
+                status.innerHTML = `/// FAILED: ${err.message}`;
             }
         }
     </script>
 </body>
-        </html>
+</html>
