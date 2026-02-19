@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. // SOVEREIGN NODE</title>
+    
+    <title>OMNIF BLACK // SOVEREIGN TERMINAL</title>
+    <meta name="description" content="Secure entry point for R.A.C.E. algorithmic logistics.">
+    <meta property="og:title" content="OMNIF BLACK // SOVEREIGN TERMINAL">
+    <meta property="og:description" content="Tier-1 Liquidity Routing & Arbitrage Logistics. Managed via Osogbo HQ.">
+    <meta property="og:image" content="https://omnif.carrd.co/assets/images/card.jpg">
+    <meta property="og:type" content="website">
+
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
     <style>
         :root { --navy: #020b1c; --gold: #D4AF37; --green: #00ff00; --red: #ff3333; }
-        body, html { margin: 0; padding: 0; background: var(--navy); color: #fff; font-family: 'Courier New', monospace; scroll-behavior: smooth; }
-        .section { padding: 60px 20px; min-height: 90vh; border-bottom: 2px solid #1a2639; text-align: center; }
+        body, html { margin: 0; padding: 0; background: var(--navy); color: #fff; font-family: 'Courier New', monospace; scroll-behavior: smooth; text-align: center; }
+        .section { padding: 60px 20px; min-height: 90vh; border-bottom: 1px solid #1a2639; }
         .header-title { font-size: 28px; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 5px; }
         .sub-gold { color: var(--gold); font-size: 10px; letter-spacing: 4px; margin-bottom: 40px; }
         .btn-gold { background: var(--gold); border: none; color: #000; padding: 18px 40px; font-weight: bold; width: 100%; max-width: 320px; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; }
         .matrix-box { border: 1px solid var(--green); margin: 30px auto; max-width: 350px; padding: 25px; background: rgba(0, 255, 0, 0.02); text-align: left; }
-        .phase-box { text-align: left; max-width: 400px; margin: 40px auto; padding: 20px; border-left: 2px solid var(--gold); }
-        .phase-num { color: var(--green); font-size: 10px; letter-spacing: 2px; }
         #status-readout { margin-top: 20px; font-size: 10px; color: var(--gold); }
         #legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,11,28,0.98); z-index: 999; justify-content: center; align-items: center; }
         .dossier { background: #000; border: 1px solid var(--gold); padding: 30px; width: 85%; max-height: 80vh; overflow-y: auto; text-align: left; font-size: 12px; }
@@ -26,30 +31,18 @@
         <h1 class="header-title">R.A.C.E.<br>SOVEREIGN NODE</h1>
         <div class="sub-gold">ARCHITECTS OF WEALTH & LOGISTICS</div>
         <button class="btn-gold" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSdF7shXRu3tDfaCgn9sU0FachF5fCwj7KDlR4lBNJVkM0sy9Q/viewform?usp=pp_url'">INITIALIZE SESSION</button>
-        <div style="margin-top: 40px; font-size: 9px; color: var(--green); cursor: pointer;" onclick="window.open('YOUR_PDF_BRIEFING_URL', '_blank')">
-            ● OFFICER ONLINE (OSOGBO HQ)<br><span style="text-decoration: underline;">DOWNLOAD LIAISON BRIEFING >></span>
-        </div>
-    </div>
-
-    <div class="phase-box">
-        <div class="phase-num">PHASE 01: INITIATION</div>
-        <div style="font-size: 18px; margin: 10px 0;">THE SCAN</div>
-        <p style="font-size: 11px; color: #888;">Analyzing price inefficiencies. [NODE ARC-001 ACTIVE]</p>
     </div>
 
     <div id="matrix-gate" class="section">
-        <div class="phase-num">PHASE 03: ARCHITECTURE</div>
         <div class="matrix-box">
             <div style="color: var(--green); font-weight: bold; margin-bottom: 10px;">/// SACIPH OF AUTHORITY</div>
-            <p style="font-size: 11px; color: #888;">Restricted to internal providers. Yield: 12.5% - 18.0%.</p>
             <button id="key-btn" style="background:transparent; border:1px solid var(--green); color:var(--green); padding:15px; width:100%; margin-top:20px; font-weight:bold; cursor:pointer;" onclick="connectVault()">INSERT STAKEHOLDER KEY >></button>
         </div>
         <div id="status-readout">/// STATUS: STANDBY_LOCKED</div>
 
         <div style="margin-top: 50px; font-size: 10px; color: #444;">
             <span style="cursor: pointer;" onclick="openVault('legal')">[ TERMS ]</span> &nbsp; | &nbsp; 
-            <span style="cursor: pointer;" onclick="openVault('tax')">[ TAX DEDUCTIONS ]</span> &nbsp; | &nbsp;
-            <span style="cursor: pointer;" onclick="window.location.href='mailto:adeoti@race-llc.com?subject=Audit%20Request'">[ REQUEST AUDIT ]</span>
+            <span style="cursor: pointer;" onclick="openVault('tax')">[ TAX DEDUCTIONS ]</span>
         </div>
     </div>
 
@@ -61,13 +54,8 @@
     </div>
 
     <script>
-        const taxGuide = `
-            <h3 style="color:var(--green)">TAX OPTIMIZATION MODULE</h3>
-            <p>Protocol fees are fully deductible from 2026 CGT liability.</p>
-            <ul><li>Gas: Deductible</li><li>Bridge: Deductible</li><li>Mgmt Fee: Deductible</li></ul>
-        `;
-        const legalText = `<h3 style="color:var(--gold)">LEGAL DISCLOSURE</h3><p>Risk: High. Digital asset logistics involve volatility. R.A.C.E. is a logistics provider.</p>`;
-
+        const taxGuide = `<h3>TAX OPTIMIZATION</h3><p>Fees are deductible from 2026 CGT liability.</p>`;
+        const legalText = `<h3>LEGAL</h3><p>High-volatility digital asset logistics. Managed via Osogbo.</p>`;
         function openVault(t) {
             document.getElementById('modal-content').innerHTML = t === 'tax' ? taxGuide : legalText;
             document.getElementById('legal-modal').style.display = 'flex';
