@@ -7,27 +7,17 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
     <style>
         :root { --navy: #020b1c; --gold: #D4AF37; --green: #00ff00; --red: #ff3333; }
-        body, html { margin: 0; padding: 0; background: var(--navy); color: #fff; font-family: 'Courier New', monospace; scroll-behavior: smooth; text-align: center; }
-        
-        .section { padding: 60px 20px; min-height: 90vh; border-bottom: 1px solid #1a2639; }
-        .header-title { font-size: 28px; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 5px; line-height: 1.2; }
-        .sub-gold { color: var(--gold); font-size: 10px; letter-spacing: 4px; margin-bottom: 40px; text-transform: uppercase; }
-
-        /* Navigation Buttons */
-        .btn-gold { background: var(--gold); border: none; color: #000; padding: 18px 40px; font-weight: bold; width: 100%; max-width: 320px; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; font-size: 14px; }
-        .btn-outline { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 15px; width: 100%; cursor: pointer; text-transform: uppercase; font-weight: bold; font-size: 12px; }
-
-        /* SACIPHUB Matrix Container (from Image) */
-        .matrix-container { border: 1px solid var(--green); margin: 30px auto; max-width: 350px; padding: 25px; background: rgba(0, 255, 0, 0.02); text-align: left; }
-        .matrix-text { color: #888; font-size: 11px; line-height: 1.6; margin-bottom: 20px; }
-        
-        /* Phase Diagnostic Styling */
+        body, html { margin: 0; padding: 0; background: var(--navy); color: #fff; font-family: 'Courier New', monospace; scroll-behavior: smooth; }
+        .section { padding: 60px 20px; min-height: 90vh; border-bottom: 2px solid #1a2639; text-align: center; }
+        .header-title { font-size: 28px; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 5px; }
+        .sub-gold { color: var(--gold); font-size: 10px; letter-spacing: 4px; margin-bottom: 40px; }
+        .btn-gold { background: var(--gold); border: none; color: #000; padding: 18px 40px; font-weight: bold; width: 100%; max-width: 320px; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; }
+        .matrix-box { border: 1px solid var(--green); margin: 30px auto; max-width: 350px; padding: 25px; background: rgba(0, 255, 0, 0.02); text-align: left; }
         .phase-box { text-align: left; max-width: 400px; margin: 40px auto; padding: 20px; border-left: 2px solid var(--gold); }
         .phase-num { color: var(--green); font-size: 10px; letter-spacing: 2px; }
-        .phase-title { font-size: 18px; letter-spacing: 3px; margin: 10px 0; text-transform: uppercase; }
-
-        #status-readout { margin-top: 20px; font-size: 10px; color: var(--gold); letter-spacing: 1px; }
-        .liaison-link { color: var(--green); font-size: 9px; cursor: pointer; margin-top: 40px; text-decoration: none; display: block; }
+        #status-readout { margin-top: 20px; font-size: 10px; color: var(--gold); }
+        #legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,11,28,0.98); z-index: 999; justify-content: center; align-items: center; }
+        .dossier { background: #000; border: 1px solid var(--gold); padding: 30px; width: 85%; max-height: 75vh; overflow-y: auto; text-align: left; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -35,84 +25,54 @@
     <div class="section">
         <h1 class="header-title">R.A.C.E.<br>SOVEREIGN NODE</h1>
         <div class="sub-gold">ARCHITECTS OF WEALTH & LOGISTICS</div>
-        
-        <p style="font-size: 12px; color: #aaa; max-width: 320px; margin: 0 auto 40px auto; line-height: 1.8;">
-            The $RACE Protocol is not a public service; it is a strategic advantage.
-        </p>
-
-        <button class="btn-gold" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSdF7shXRu3tDfaCgn9sU0FachF5fCwj7KDlR4lBNJVkM0sy9Q/viewform?usp=pp_url'">
-            INITIALIZE SESSION
-        </button>
-
-        <a class="liaison-link" onclick="document.getElementById('matrix-gate').scrollIntoView();">
-            ● OFFICER ONLINE (OSOGBO HQ)<br>
-            <span style="text-decoration: underline; color: #fff;">REQUEST EXECUTIVE CLEARANCE >></span>
-        </a>
+        <button class="btn-gold" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSdF7shXRu3tDfaCgn9sU0FachF5fCwj7KDlR4lBNJVkM0sy9Q/viewform?usp=pp_url'">INITIALIZE SESSION</button>
+        <div style="margin-top: 40px; font-size: 9px; color: var(--green); cursor: pointer;" onclick="window.open('YOUR_PDF_LINK_HERE', '_blank')">
+            ● OFFICER ONLINE (OSOGBO HQ)<br><span style="text-decoration: underline;">DOWNLOAD LIAISON BRIEFING >></span>
+        </div>
     </div>
 
     <div class="phase-box">
         <div class="phase-num">PHASE 01: INITIATION</div>
-        <div class="phase-title">THE SCAN</div>
-        <p style="font-size: 12px; color: #888;">Analyzing global price inefficiencies. [NODE ARC-001 ACTIVE]</p>
-    </div>
-
-    <div class="phase-box" style="border-left-color: var(--green);">
-        <div class="phase-num">PHASE 02: EXECUTION</div>
-        <div class="phase-title">ARBITRAGE STRIKE ⚡</div>
-        <p style="font-size: 12px; color: #888;">Funding + Intelligence convergence. One-way capital flow secured via $RACE Core.</p>
+        <div style="font-size: 18px; margin: 10px 0;">THE SCAN</div>
+        <p style="font-size: 11px; color: #888;">Analyzing global price inefficiencies. [NODE ARC-001 ACTIVE]</p>
     </div>
 
     <div id="matrix-gate" class="section">
-        <div style="color: var(--green); font-size: 10px; letter-spacing: 3px; margin-bottom: 10px;">OMNIF PORTAL // EXECUTIVE TIER</div>
-        <h2 style="font-size: 20px; letter-spacing: 5px; margin-bottom: 30px;">SACIPHUB MATRIX</h2>
-
-        <div class="matrix-container">
-            <div style="color: var(--green); font-weight: bold; margin-bottom: 10px;">/// NOTICE OF AUTHORITY</div>
-            <div class="matrix-text">
-                While this terminal serves public intake operations, this specific jurisdiction is <strong>RESTRICTED</strong> to internal liquidity providers. Entering this matrix grants Tier-1 yield capabilities.
-            </div>
-
-            <div style="display: flex; justify-content: space-between; border-top: 1px dashed #333; padding-top: 15px;">
-                <div>
-                    <span style="font-size: 9px; color: #555;">PROJECTED YIELD</span><br>
-                    <span style="color: var(--green); font-weight: bold;">12.5% - 18.0%</span>
-                </div>
-                <div style="text-align: right;">
-                    <span style="font-size: 9px; color: #555;">LOCK CYCLE</span><br>
-                    <span style="color: #fff; font-weight: bold;">30 / 90 DAYS</span>
-                </div>
-            </div>
-
-            <button id="key-btn" class="btn-outline" style="margin-top: 25px;" onclick="connectVault()">
-                INSERT STAKEHOLDER KEY >>
-            </button>
+        <div class="phase-num">PHASE 03: ARCHITECTURE</div>
+        <div class="matrix-box">
+            <div style="color: var(--green); font-weight: bold; margin-bottom: 10px;">/// SACIPH OF AUTHORITY</div>
+            <p style="font-size: 11px; color: #888;">Restricted to internal providers. Hanvergence.</p>
+            <button id="key-btn" style="background:transparent; border:1px solid var(--green); color:var(--green); padding:15px; width:100%; margin-top:20px; font-weight:bold; cursor:pointer;" onclick="connectVault()">INSERT STAKEHOLDER KEY >></button>
         </div>
-
         <div id="status-readout">/// STATUS: STANDBY_LOCKED</div>
-        <div style="color: var(--gold); font-size: 10px; letter-spacing: 5px; margin-top: 50px; opacity: 0.6;">**VIP**</div>
+        <div style="margin-top: 50px; font-size: 10px; color: #444; cursor: pointer;" onclick="openLegal()">[ VIEW TERMS & DISCLAIMER ]</div>
+    </div>
+
+    <div id="legal-modal">
+        <div class="dossier">
+            <h2 style="color:var(--gold)">LEGAL DISCLOSURE</h2>
+            <p><strong>RISK:</strong> High-volatility market dynamics apply. 25% CGT applied in Nigeria starting 2026.</p>
+            <p><strong>DISCLAIMER:</strong> R.A.C.E. LLC is not a bank or financial advisor.</p>
+            <button class="btn-gold" onclick="closeLegal()" style="margin-top:20px;">I ACKNOWLEDGE</button>
+        </div>
     </div>
 
     <script>
+        function openLegal() { document.getElementById('legal-modal').style.display = 'flex'; }
+        function closeLegal() { document.getElementById('legal-modal').style.display = 'none'; }
+        
         async function connectVault() {
             const status = document.getElementById('status-readout');
             try {
-                // MOBILE PROTECTION
                 if (typeof window.ethereum === 'undefined') {
-                    status.innerHTML = `/// VAULT NOT DETECTED.<br><br><a href="https://metamask.app.link/dapp/race-node-terminal.vercel.app/" style="color:var(--gold);">[ OPEN IN METAMASK MOBILE ]</a>`;
+                    status.innerHTML = `/// VAULT NOT DETECTED. <a href="https://metamask.app.link/dapp/race-node-terminal.vercel.app/" style="color:var(--gold);">[ OPEN IN METAMASK ]</a>`;
                     return;
                 }
-                status.innerHTML = "/// INITIALIZING EXECUTIVE HANDSHAKE...";
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 await provider.send("eth_requestAccounts", []);
-                
                 status.style.color = "var(--green)";
                 status.innerHTML = "/// ACCESS GRANTED. LOADING OMNIF BLACK...";
-
-                // Redirects to OMNIF BLACK Form
-                setTimeout(() => {
-                    window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfzzymBHv_XSpNYQxG9a6d7omEUkLxUhzyCVzVRbrFkbDxGcw/viewform?usp=pp_url";
-                }, 2000);
-
+                setTimeout(() => { window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfzzymBHv_XSpNYQxG9a6d7omEUkLxUhzyCVzVRbrFkbDxGcw/viewform?usp=pp_url"; }, 2000);
             } catch (err) {
                 status.style.color = "var(--red)";
                 status.innerHTML = `/// ERROR: ${err.message.toUpperCase()}`;
