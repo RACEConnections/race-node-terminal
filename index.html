@@ -3,58 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNIF BLACK // TERMINAL</title>
+    <title>R.A.C.E. // SOVEREIGN NODE</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
     <style>
-        :root { --navy: #020b1c; --gold: #D4AF37; --green: #00ff00; }
-        body { background: var(--navy); color: #fff; font-family: 'Courier New', monospace; text-align: center; margin: 0; }
-        .container { padding: 50px 20px; max-width: 600px; margin: 0 auto; }
-        .intake-box { border: 1px solid var(--gold); padding: 20px; margin-bottom: 20px; background: rgba(212,175,55,0.05); }
-        .btn { background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 15px 30px; cursor: pointer; width: 100%; font-weight: bold; }
-        #legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,11,28,0.98); z-index: 999; justify-content: center; align-items: center; }
-        .dossier { background: #000; border: 1px solid var(--gold); padding: 30px; width: 80%; max-height: 70vh; overflow-y: auto; text-align: left; font-size: 13px; }
+        :root { --navy: #020b1c; --gold: #D4AF37; --green: #00ff00; --red: #ff3333; }
+        body, html { margin: 0; padding: 0; background: var(--navy); color: #fff; font-family: 'Courier New', monospace; text-align: center; }
+        
+        /* Background Styling from your Screenshots */
+        .hero { padding: 60px 20px; background: linear-gradient(rgba(2,11,28,0.9), rgba(2,11,28,0.9)), url('YOUR_BG_IMAGE_URL'); background-size: cover; border-bottom: 2px solid var(--gold); }
+        
+        .header-title { font-size: 28px; letter-spacing: 8px; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
+        .sub-gold { color: var(--gold); font-size: 10px; letter-spacing: 4px; margin-bottom: 40px; }
+
+        /* The Dashboard Boxes */
+        .matrix-container { border: 1px solid var(--green); margin: 20px auto; max-width: 350px; padding: 25px; background: rgba(0, 255, 0, 0.02); position: relative; }
+        .matrix-title { color: var(--green); font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; }
+        
+        /* Execution Buttons */
+        .btn-gold { background: var(--gold); border: none; color: #000; padding: 18px 40px; font-weight: bold; width: 100%; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; }
+        .btn-outline { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 15px; width: 100%; cursor: pointer; margin-top: 15px; }
+
+        #status-readout { margin-top: 20px; font-size: 10px; color: var(--gold); line-height: 1.6; }
+        a { color: var(--gold); text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="color:var(--gold); letter-spacing: 5px;">OMNIF BLACK</h1>
-        <div class="intake-box">
-            <button class="btn" onclick="connectWallet()">INITIALIZE HANDSHAKE</button>
-            <p id="status" style="font-size: 10px; margin-top: 10px; color: var(--gold);">/// SYSTEM READY</p>
-        </div>
+
+    <div class="hero">
+        <h1 class="header-title">R.A.C.E.<br>SOVEREIGN NODE</h1>
+        <div class="sub-gold">ARCHITECTS OF WEALTH & LOGISTICS</div>
+        
+        <p style="font-size: 12px; color: #aaa; max-width: 300px; margin: 0 auto 30px auto; line-height: 1.8;">
+            The $RACE Protocol is not a public service; it is a strategic advantage.
+        </p>
+
+        <button class="btn-gold" onclick="initializeSession()">INITIALIZE SESSION</button>
     </div>
 
-    <div id="legal-modal" onclick="closeLegal()">
-        <div class="dossier" onclick="event.stopPropagation()">
-            <h2 style="color:var(--gold)">OPERATIONAL MANDATE</h2>
-            <p>Risk: Market volatility. Yield is a projection.</p>
-            <button class="btn" onclick="closeLegal()">CLOSE VAULT</button>
+    <div class="matrix-container">
+        <div class="matrix-title">/// SACIPHUB MATRIX</div>
+        <div style="font-size: 11px; text-align: left; color: #888; margin-bottom: 20px;">
+            PROJECTED YIELD: <span style="color: var(--green);">12.5% - 18.0%</span><br>
+            LOCK CYCLE: <span style="color: #fff;">30 / 90 DAYS</span>
         </div>
+        
+        <button id="handshake-btn" class="btn-outline" onclick="connectVault()">INSERT STAKEHOLDER KEY >></button>
+        
+        <div id="status-readout">/// STATUS: STANDBY_READY</div>
     </div>
 
     <script>
-        // FORCED HASH LISTENER (Fixes Carrd TC Link)
-        function checkHash() { if (window.location.hash === '#legal') openLegal(); }
-        window.addEventListener('hashchange', checkHash);
-        window.addEventListener('load', checkHash);
-
-        function openLegal() { document.getElementById('legal-modal').style.display = 'flex'; }
-        function closeLegal() { document.getElementById('legal-modal').style.display = 'none'; }
-
-        // HARDENED HANDSHAKE
-        async function connectWallet() {
-            const status = document.getElementById('status');
+        // THE DEEP LINK HANDSHAKE
+        async function connectVault() {
+            const status = document.getElementById('status-readout');
+            
             try {
-                if (!window.ethereum) throw new Error("VAULT NOT DETECTED (INSTALL METAMASK)");
-                status.innerHTML = "/// REQUESTING PERMISSION...";
+                // Check if we are inside a Web3 Browser (MetaMask/Trust)
+                if (typeof window.ethereum === 'undefined') {
+                    status.innerHTML = `/// FAILED: VAULT NOT DETECTED.<br><br>
+                        <a href="https://metamask.app.link/dapp/race-node-terminal.vercel.app/">CLICK HERE TO OPEN IN METAMASK MOBILE</a>`;
+                    return;
+                }
+
+                status.innerHTML = "/// INITIALIZING CRYPTOGRAPHIC HANDSHAKE...";
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 await provider.send("eth_requestAccounts", []);
+                
                 status.style.color = "var(--green)";
-                status.innerHTML = "/// HANDSHAKE VERIFIED. READY FOR MIGRATION.";
+                status.innerHTML = "/// HANDSHAKE VERIFIED. ACCESS GRANTED.";
+                
+                // Redirect to the Secure Intake Form after 2 seconds
+                setTimeout(() => {
+                    window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfpD-055mC7Vp8N3M1_r9V_S987K/viewform";
+                }, 2000);
+
             } catch (err) {
-                status.style.color = "red";
-                status.innerHTML = `/// FAILED: ${err.message}`;
+                status.style.color = "var(--red)";
+                status.innerHTML = `/// ERROR: ${err.message}`;
             }
+        }
+
+        function initializeSession() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
 </body>
