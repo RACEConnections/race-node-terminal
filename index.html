@@ -17,7 +17,7 @@
         .phase-num { color: var(--green); font-size: 10px; letter-spacing: 2px; }
         #status-readout { margin-top: 20px; font-size: 10px; color: var(--gold); }
         #legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,11,28,0.98); z-index: 999; justify-content: center; align-items: center; }
-        .dossier { background: #000; border: 1px solid var(--gold); padding: 30px; width: 85%; max-height: 75vh; overflow-y: auto; text-align: left; font-size: 12px; }
+        .dossier { background: #000; border: 1px solid var(--gold); padding: 30px; width: 85%; max-height: 80vh; overflow-y: auto; text-align: left; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -26,7 +26,7 @@
         <h1 class="header-title">R.A.C.E.<br>SOVEREIGN NODE</h1>
         <div class="sub-gold">ARCHITECTS OF WEALTH & LOGISTICS</div>
         <button class="btn-gold" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSdF7shXRu3tDfaCgn9sU0FachF5fCwj7KDlR4lBNJVkM0sy9Q/viewform?usp=pp_url'">INITIALIZE SESSION</button>
-        <div style="margin-top: 40px; font-size: 9px; color: var(--green); cursor: pointer;" onclick="window.open('YOUR_PDF_LINK_HERE', '_blank')">
+        <div style="margin-top: 40px; font-size: 9px; color: var(--green); cursor: pointer;" onclick="window.open('YOUR_PDF_BRIEFING_URL', '_blank')">
             ● OFFICER ONLINE (OSOGBO HQ)<br><span style="text-decoration: underline;">DOWNLOAD LIAISON BRIEFING >></span>
         </div>
     </div>
@@ -34,31 +34,44 @@
     <div class="phase-box">
         <div class="phase-num">PHASE 01: INITIATION</div>
         <div style="font-size: 18px; margin: 10px 0;">THE SCAN</div>
-        <p style="font-size: 11px; color: #888;">Analyzing global price inefficiencies. [NODE ARC-001 ACTIVE]</p>
+        <p style="font-size: 11px; color: #888;">Analyzing price inefficiencies. [NODE ARC-001 ACTIVE]</p>
     </div>
 
     <div id="matrix-gate" class="section">
         <div class="phase-num">PHASE 03: ARCHITECTURE</div>
         <div class="matrix-box">
             <div style="color: var(--green); font-weight: bold; margin-bottom: 10px;">/// SACIPH OF AUTHORITY</div>
-            <p style="font-size: 11px; color: #888;">Restricted to internal providers. Hanvergence.</p>
+            <p style="font-size: 11px; color: #888;">Restricted to internal providers. Yield: 12.5% - 18.0%.</p>
             <button id="key-btn" style="background:transparent; border:1px solid var(--green); color:var(--green); padding:15px; width:100%; margin-top:20px; font-weight:bold; cursor:pointer;" onclick="connectVault()">INSERT STAKEHOLDER KEY >></button>
         </div>
         <div id="status-readout">/// STATUS: STANDBY_LOCKED</div>
-        <div style="margin-top: 50px; font-size: 10px; color: #444; cursor: pointer;" onclick="openLegal()">[ VIEW TERMS & DISCLAIMER ]</div>
+
+        <div style="margin-top: 50px; font-size: 10px; color: #444;">
+            <span style="cursor: pointer;" onclick="openVault('legal')">[ TERMS ]</span> &nbsp; | &nbsp; 
+            <span style="cursor: pointer;" onclick="openVault('tax')">[ TAX DEDUCTIONS ]</span> &nbsp; | &nbsp;
+            <span style="cursor: pointer;" onclick="window.location.href='mailto:adeoti@race-llc.com?subject=Audit%20Request'">[ REQUEST AUDIT ]</span>
+        </div>
     </div>
 
     <div id="legal-modal">
         <div class="dossier">
-            <h2 style="color:var(--gold)">LEGAL DISCLOSURE</h2>
-            <p><strong>RISK:</strong> High-volatility market dynamics apply. 25% CGT applied in Nigeria starting 2026.</p>
-            <p><strong>DISCLAIMER:</strong> R.A.C.E. LLC is not a bank or financial advisor.</p>
-            <button class="btn-gold" onclick="closeLegal()" style="margin-top:20px;">I ACKNOWLEDGE</button>
+            <div id="modal-content"></div>
+            <button class="btn-gold" onclick="closeLegal()" style="margin-top:20px; width:100%;">CLOSE VAULT</button>
         </div>
     </div>
 
     <script>
-        function openLegal() { document.getElementById('legal-modal').style.display = 'flex'; }
+        const taxGuide = `
+            <h3 style="color:var(--green)">TAX OPTIMIZATION MODULE</h3>
+            <p>Protocol fees are fully deductible from 2026 CGT liability.</p>
+            <ul><li>Gas: Deductible</li><li>Bridge: Deductible</li><li>Mgmt Fee: Deductible</li></ul>
+        `;
+        const legalText = `<h3 style="color:var(--gold)">LEGAL DISCLOSURE</h3><p>Risk: High. Digital asset logistics involve volatility. R.A.C.E. is a logistics provider.</p>`;
+
+        function openVault(t) {
+            document.getElementById('modal-content').innerHTML = t === 'tax' ? taxGuide : legalText;
+            document.getElementById('legal-modal').style.display = 'flex';
+        }
         function closeLegal() { document.getElementById('legal-modal').style.display = 'none'; }
         
         async function connectVault() {
