@@ -107,6 +107,46 @@
         buyback.innerText = "₦" + Math.floor(newVal * 0.20).toLocaleString();
     }, 30000);
 </script>
+<div style="margin-top: 30px; border-top: 1px dashed #333; padding-top: 10px;">
+    <button onclick="toggleAudit()" style="background:transparent; color:#333; border:none; font-size:9px; cursor:pointer;">[ ACCESS CEO AUDIT LOG ]</button>
+    
+    <div id="audit-log-container" style="display:none; margin-top:10px; background:#0a0a0a; border:1px solid #222; padding:10px;">
+        <div style="color:var(--gold); font-size:10px; margin-bottom:10px;">/// SYSTEM AUDIT TRAIL (LAST 5 ENTRIES)</div>
+        <div id="audit-entries" style="font-size:9px; color:#888;">
+            FETCHING RECENT LOGS FROM MASTER LEDGER...
+        </div>
+    </div>
+</div>
 
+<script>
+    async function toggleAudit() {
+        const container = document.getElementById('audit-log-container');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            fetchAuditLogs();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    async function fetchAuditLogs() {
+        try {
+            const res = await fetch(SCRIPT_URL);
+            const data = await res.json();
+            // Take the last 5 entries from the sheet
+            const recent = data.slice(-5).reverse();
+            let html = "";
+            recent.forEach(log => {
+                html += `<div style="margin-bottom:5px; border-bottom:1px solid #111;">
+                    [${log.Timestamp}] <span style="color:var(--cyan);">${log.Liaison}</span> 
+                    recovered ${log.Weight}kg of ${log.Category}
+                </div>`;
+            });
+            document.getElementById('audit-entries').innerHTML = html || "NO RECENT LOGS DETECTED.";
+        } catch (e) {
+            document.getElementById('audit-entries').innerHTML = "SYNC ERROR: UNABLE TO RETRIEVE AUDIT TRAIL.";
+        }
+    }
+</script>
 </body>
 </html>
