@@ -5,14 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>R.A.C.E. SOVEREIGN TERMINAL [ARC-001]</title>
     <style>
-        :root { --gold: #D4AF37; --green: #00FF41; --bg: #050505; }
-        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow-x: hidden; }
-        .terminal-border { border: 2px solid var(--gold); padding: 15px; position: relative; }
-        .header { display: flex; justify-content: space-between; border-bottom: 1px solid var(--gold); padding-bottom: 10px; margin-bottom: 20px; }
-        .burn-meter { background: #111; height: 10px; border: 1px solid #333; margin: 5px 0; }
-        .burn-fill { background: var(--gold); height: 100%; transition: width 1s; }
-        .alert-box { border: 1px solid red; color: red; padding: 10px; margin-top: 20px; font-size: 12px; }
-        .btn-gold { background: var(--gold); color: black; border: none; padding: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        :root { --gold: #D4AF37; --green: #00FF41; --bg: #050505; --cyan: #00FFFF; }
+        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; padding: 10px; line-height: 1.4; }
+        .terminal-border { border: 2px solid var(--gold); padding: 15px; max-width: 800px; margin: auto; }
+        .header { display: flex; justify-content: space-between; border-bottom: 1px solid var(--gold); padding-bottom: 5px; margin-bottom: 15px; font-size: 12px; }
+        .ledger-box { background: #111; border: 1px solid #333; padding: 10px; margin: 15px 0; overflow-x: auto; }
+        .ticker-wrap { background: #000; overflow: hidden; white-space: nowrap; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); margin: 10px 0; }
+        .ticker { display: inline-block; animation: scroll 25s linear infinite; padding: 5px; font-size: 11px; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        .btn-gold:disabled { background: #555; cursor: not-allowed; }
+        input, select { width: 100%; box-sizing: border-box; background: #000; color: var(--green); border: 1px solid #444; padding: 8px; margin-bottom: 10px; font-family: inherit; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { text-align: left; color: var(--gold); border-bottom: 1px solid #333; padding: 5px; }
+        td { padding: 5px; border-bottom: 1px solid #222; }
+        .live-price { color: #fff; font-weight: bold; }
+        label { font-size: 10px; color: var(--gold); display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -20,41 +28,124 @@
 <div class="terminal-border">
     <div class="header">
         <div>/// R.A.C.E. NODE: ARC-001 [OSOGBO]</div>
-        <div>STAKEHOLDER: [ VERIFIED ]</div>
+        <div id="clock">26-02-2026 | 21:12 WAT</div>
     </div>
 
-    <div style="margin-bottom: 20px;">
-        <div style="color: var(--gold);">[ EXPLAINABLE HASH: EH-001-MINING-SAFETY ]</div>
-        <p>STATUS: OPERATIONAL // $RACE UTILITY ACTIVE</p>
-        
-        <label>INTERNAL SACIPHUB BURN PROGRESS:</label>
-        <div class="burn-meter"><div class="burn-fill" style="width: 84.2%;"></div></div>
-        
-        <label>INTERNAL OMNIF BURN PROGRESS:</label>
-        <div class="burn-meter"><div class="burn-fill" style="width: 62.8%;"></div></div>
+    <div class="ledger-box">
+        <div style="color: var(--gold); font-size: 10px; margin-bottom: 10px;">[ MASTER LEDGER: LIVE ASSET FLOOR ]</div>
+        <div id="ledger-data">Initializing secure data stream...</div>
     </div>
 
-    <div style="background: #0a0a0a; padding: 10px; border: 1px solid #222;">
-        <p>/// INITIALIZE SAFETY-CHECK TRIGGER</p>
-        <input type="text" placeholder="ENTER MINING SITE ID..." style="width: 100%; background: #000; color: var(--green); border: 1px solid #444; padding: 5px;">
-        <button class="btn-gold" onclick="alert('UTILITY TRIGGERED: HASH LOGGED TO OMNIF')">ACTIVATE $RACE UTILITY</button>
+    <div class="ticker-wrap">
+        <div class="ticker">
+            [NEWS] SEC ARIP: $RACE UTILITY CLASSIFIED AS INDUSTRIAL SAFETY ASSET ... [MARKET] COPPER DEMAND UP 12.3% ... [NBP] ZERO-FEE INTEGRITY AUDIT ACTIVE AT NODE ARC-001 ... [ALERT] VINTAGE COLONIAL FURNITURE APPRAISALS HIT ₦150K FLOOR ...
+        </div>
     </div>
 
-    <div class="alert-box">
-        CAUTION: ALWAYS VERIFY THE URL. THIS IS THE ONLY AUTHORIZED SOVEREIGN TERMINAL FOR RC 722617.
+    <div class="ledger-box" style="border-color: var(--cyan);">
+        <h3 style="color: var(--gold); margin-top: 0; font-size: 14px;">/// NEW ASSET APPRAISAL</h3>
+        <form id="appraisalForm">
+            <label>LIAISON NAME</label>
+            <input type="text" name="Liaison" placeholder="Enter ID..." required>
+            
+            <label>ASSET MATERIAL / DESCRIPTION</label>
+            <input type="text" name="Material" placeholder="e.g. Copper Armature / Victorian Chair" required>
+            
+            <label>PHOTO PROOF (MAKER'S MARK / RADIATOR)</label>
+            <input type="file" id="photoInput" accept="image/*">
+            
+            <button type="submit" class="btn-gold" id="submitBtn">PUSH TO MASTER LEDGER</button>
+        </form>
     </div>
 
-    <div style="margin-top: 20px; font-size: 10px; display: flex; justify-content: space-between;">
-        <span onclick="window.location.href='https://omnif.carrd.co'" style="cursor:pointer;">[ BACK TO GATEWAY ]</span>
-        <span onclick="openAudit()" style="cursor:pointer; color: var(--gold);">[ SUBMIT INTEGRITY AUDIT ]</span>
+    <div style="font-size: 9px; color: #555; text-align: center; margin-top: 10px;">
+        RC 722617 | ALIGNED WITH NATIONAL BUSINESS POLICY (NBP)
     </div>
 </div>
 
 <script>
-    function openAudit() {
-        alert("Integrity Audit Form Requested. Submit your feedback on staff compliance directly to the Founding Team.");
+    // YOUR VERIFIED DEPLOYMENT URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNcWGUEvqdPsOjX15Y8X62f-KvPleDdcBQd-UfoGV3SK-nHdlt3qWUstT8i_XZrQ0q/exec";
+
+    // 1. FETCH LIVE DATA FROM GOOGLE SHEETS
+    async function fetchLedger() {
+        try {
+            const response = await fetch(SCRIPT_URL);
+            const data = await response.json();
+            
+            if (data.length === 0) {
+                document.getElementById('ledger-data').innerHTML = "NO DATA IN MASTER LEDGER.";
+                return;
+            }
+
+            let html = '<table><tr><th>ASSET</th><th>PRICE</th><th>TREND</th></tr>';
+            data.forEach(item => {
+                // Only display rows that have an 'Asset' name
+                if(item.Asset || item.Material) {
+                    html += `<tr>
+                        <td>${item.Asset || item.Material}</td>
+                        <td class="live-price">₦${item.Price || '---'}</td>
+                        <td style="color:${item.Trend?.includes('▲') ? '#00FF41' : '#ff4136'}">${item.Trend || '-'}</td>
+                    </tr>`;
+                }
+            });
+            html += '</table>';
+            document.getElementById('ledger-data').innerHTML = html;
+        } catch (e) {
+            document.getElementById('ledger-data').innerHTML = "SIGNAL ERROR: SYNCING...";
+        }
     }
+
+    // 2. PUSH DATA & PHOTO TO GOOGLE SHEETS
+    document.getElementById('appraisalForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const fileInput = document.getElementById('photoInput');
+        
+        btn.disabled = true;
+        btn.innerText = "UPLOADING ASSET...";
+        
+        const formData = new FormData(e.target);
+        const params = new URLSearchParams(formData);
+
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64Data = reader.result.split(',')[1];
+                params.append("fileData", base64Data);
+                params.append("mimeType", file.type);
+                params.append("filename", `ARC001_${Date.now()}.jpg`);
+                await sendToSheet(params);
+            };
+        } else {
+            await sendToSheet(params);
+        }
+    });
+
+    async function sendToSheet(params) {
+        try {
+            const response = await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
+            const result = await response.json();
+            if(result.result === "success") {
+                alert("ASSET LOGGED SUCCESSFULLY TO MASTER LEDGER");
+                document.getElementById('appraisalForm').reset();
+                fetchLedger(); // Refresh display
+            }
+        } catch (err) {
+            alert("UPLOAD ERROR: CHECK NETWORK SIGNAL");
+        } finally {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = false;
+            btn.innerText = "PUSH TO MASTER LEDGER";
+        }
+    }
+
+    // Initialize and set auto-refresh
+    fetchLedger();
+    setInterval(fetchLedger, 60000); // Refresh every minute
 </script>
 
 </body>
-</html>
+    </html>
