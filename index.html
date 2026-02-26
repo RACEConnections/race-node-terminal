@@ -1,1 +1,79 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R.A.C.E. QUICK-LOG [ARC-001]</title>
+    <style>
+        :root { --gold: #D4AF37; --green: #00FF41; --bg: #050505; --cyan: #00FFFF; }
+        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; padding: 10px; }
+        .terminal-border { border: 2px solid var(--gold); padding: 15px; max-width: 450px; margin: auto; }
+        .ledger-box { background: #111; border: 1px solid #333; padding: 12px; margin: 15px 0; }
+        .btn-cat { border: none; padding: 15px; font-weight: bold; font-size: 11px; cursor: pointer; color: #fff; border-radius: 4px; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px; margin-top: 15px; }
+        input { width: 100%; box-sizing: border-box; background: #000; color: #fff; border: 2px solid #444; padding: 12px; margin-top: 10px; font-size: 16px; }
+        .status-msg { font-size: 10px; color: var(--gold); text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="terminal-border">
+    <div style="text-align: center; border-bottom: 1px solid var(--gold); padding-bottom: 10px;">
+        <div style="font-size: 14px; font-weight: bold;">R.A.C.E. LOGISTICS LIAISON</div>
+        <div style="font-size: 10px;">NODE ARC-001 | OSOGBO</div>
+    </div>
+
+    <div class="ledger-box">
+        <div class="status-msg">STEP 1: WHO ARE YOU?</div>
+        <input type="text" id="liaisonID" placeholder="YOUR NAME / ID" required>
+    </div>
+
+    <div class="ledger-box" style="border-color: var(--cyan);">
+        <div class="status-msg">STEP 2: WHAT DID YOU FIND?</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn-cat" style="background:#b8860b;" onclick="setCat('Metal_Copper', 'COPPER / BRASS')">COPPER / BRASS</button>
+            <button class="btn-cat" style="background:#2f4f4f;" onclick="setCat('Metal_Iron', 'IRON / STEEL')">IRON / STEEL</button>
+            <button class="btn-cat" style="background:#0056b3;" onclick="setCat('Plastic_PET', 'PLASTIC BOTTLES')">BOTTLES</button>
+            <button class="btn-cat" style="background:#1e7e34;" onclick="setCat('Glass_Heritage', 'OLD GLASS / JARS')">OLD GLASS</button>
+        </div>
+        <input type="hidden" id="selectedCat">
+        <div id="catDisplay" style="text-align:center; margin-top:10px; color:var(--cyan); font-weight:bold;">[ SELECT CATEGORY ]</div>
+    </div>
+
+    <div class="ledger-box">
+        <div class="status-msg">STEP 3: HOW MANY KILOS?</div>
+        <input type="number" id="kiloInput" placeholder="ENTER KILOS (Scale Number)" step="0.1">
+        <button class="btn-gold" onclick="pushLog()">CONFIRM & CLAIM STAKE</button>
+    </div>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNcWGUEvqdPsOjX15Y8X62f-KvPleDdcBQd-UfoGV3SK-nHdlt3qWUstT8i_XZrQ0q/exec";
+
+    function setCat(id, name) {
+        document.getElementById('selectedCat').value = id;
+        document.getElementById('catDisplay').innerText = "READY: " + name;
+    }
+
+    async function pushLog() {
+        const id = document.getElementById('liaisonID').value;
+        const cat = document.getElementById('selectedCat').value;
+        const kilo = document.getElementById('kiloInput').value;
+
+        if(!id || !cat || !kilo) { alert("Please fill all steps!"); return; }
+
+        const params = new URLSearchParams({ Liaison: id, Category: cat, Weight: kilo });
+        
+        try {
+            await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
+            alert("SUCCESS! WORK LOGGED TO MASTER LEDGER.");
+            location.reload();
+        } catch(e) {
+            alert("SIGNAL WEAK. RE-TRYING...");
+        }
+    }
+</script>
+
+</body>
+</html>
