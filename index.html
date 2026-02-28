@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. SENTINEL TERMINAL v5.2</title>
+    <title>R.A.C.E. SENTINEL TERMINAL v5.3</title>
     <style>
         :root { --gold: #D4AF37; --green: #00FF41; --bg: #050505; --red: #ff3333; --cyan: #00FFFF; }
         body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; padding: 10px; }
@@ -12,8 +12,9 @@
         .box { background: #111; border: 1px solid #333; padding: 12px; margin-bottom: 15px; }
         label { display: block; font-size: 10px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
         input, select { width: 100%; box-sizing: border-box; background: #000; color: #fff; border: 1px solid #444; padding: 12px; font-family: inherit; }
-        .btn { border: none; padding: 18px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
+        .btn { border: none; padding: 18px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.3s; }
         .btn-push { background: var(--gold); color: #000; }
+        .btn-push:hover { background: #fff; }
         .btn-incident { background: transparent; border: 1px solid var(--red); color: var(--red); margin-top: 15px; font-size: 11px; }
         #status { font-size: 10px; text-align: center; margin-top: 10px; color: var(--cyan); height: 15px; }
     </style>
@@ -22,51 +23,52 @@
 
 <div class="terminal-border">
     <div class="header">
-        <div style="font-size: 20px; font-weight: bold;">R.A.C.E. LIAISON</div>
-        <div style="font-size: 9px; color: var(--cyan);">NODE ARC-001 | RC 722617 | NBP ACTIVE</div>
+        <div style="font-size: 20px; font-weight: bold; letter-spacing: 2px;">R.A.C.E. LIAISON</div>
+        <div style="font-size: 9px; color: var(--cyan);">NODE ARC-001 | RC 722617 | PERFORMANCE SYNC ACTIVE</div>
     </div>
 
     <div id="status">SYSTEM READY</div>
 
     <div class="box">
-        <label>Sentinel ID</label>
+        <label>Sentinel ID / Nickname</label>
         <input type="text" id="liaisonID" placeholder="ENTER ID">
     </div>
 
     <div class="box">
         <label>Material Category</label>
         <select id="category">
-            <option value="Metal_Copper">COPPER / BRASS</option>
-            <option value="Metal_Iron">IRON / STEEL</option>
+            <option value="Metal_Copper">COPPER / BRASS (Premium)</option>
+            <option value="Metal_Iron">IRON / STEEL (Ferrous)</option>
             <option value="Plastic_PET">BOTTLES (PET)</option>
-            <option value="Other_Utility">OTHER RWA</option>
+            <option value="Other_Utility">OTHER RECOVERED RWA</option>
         </select>
     </div>
 
     <div class="box">
-        <label>Kilo Count</label>
+        <label>Kilo Count (Verified Scale)</label>
         <input type="number" id="weight" step="0.1" placeholder="0.00">
         <button class="btn btn-push" onclick="submitData('KILO')" style="margin-top:10px;">Push to Ledger</button>
     </div>
 
-    <button class="btn btn-incident" onclick="toggleIncident()">!!! Report Field Confrontation</button>
+    <button class="btn btn-incident" id="incidentToggle" onclick="toggleIncident()">!!! Report Field Confrontation</button>
     
     <div id="incidentBox" class="box" style="display:none; border-color:var(--red); margin-top:10px;">
-        <label style="color:var(--red);">Resolution</label>
+        <label style="color:var(--red);">Resolution Resolution</label>
         <select id="iType" style="margin-bottom:5px;">
             <option value="Illegal Dumping">Stopped Illegal Dumping</option>
-            <option value="Market Inquiry">Market/Official Inquiry</option>
+            <option value="Market Inquiry">Resolved Market Inquiry</option>
         </select>
         <select id="iMethod">
             <option value="NBP Script">3-Sentence Script Used</option>
-            <option value="ID Scan">#Verify Scan Used</option>
+            <option value="ID Scan">#Verify ID Scan Used</option>
+            <option value="Whistle Blast">Whistle Blow/Control</option>
         </select>
-        <button class="btn" style="background:var(--red); color:#fff; margin-top:10px;" onclick="submitData('INCIDENT')">Log Success</button>
+        <button class="btn" style="background:var(--red); color:#fff; margin-top:10px;" onclick="submitData('INCIDENT')">Log Successful Shield</button>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwStHbQbEFJaWssGrPQJyWBYA6Ts3Vb3QGZsbzyieFQgWbcIHWM0D-Vhq63LIwhgSS3/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQT3xNHlwBNL-PWr1wqWG6anTHvyUh3Pl2WJOXH_9bHF6t6a7SqWNJJpt0aUhbacFx/exec";
 
     function toggleIncident() {
         const ib = document.getElementById('incidentBox');
@@ -76,9 +78,15 @@
     async function submitData(type) {
         const lid = document.getElementById('liaisonID').value;
         const status = document.getElementById('status');
-        if(!lid) { alert("ID REQUIRED"); return; }
+        if(!lid) { 
+            status.style.color = "var(--red)";
+            status.innerText = "ERROR: ID REQUIRED"; 
+            return; 
+        }
 
-        status.innerText = "UPLOADING...";
+        status.style.color = "var(--cyan)";
+        status.innerText = "COMMUNICATING WITH NODE ARC-001...";
+
         let params = new URLSearchParams();
         params.append("Liaison", lid);
         params.append("ReportType", type);
@@ -93,12 +101,15 @@
         }
 
         try {
-            await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
-            status.style.color = "var(--green)";
-            status.innerText = "LEDGER UPDATED";
-            setTimeout(() => location.reload(), 1500);
+            const response = await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
+            if(response.ok) {
+                status.style.color = "var(--green)";
+                status.innerText = "SUCCESS: THE LEDGER IS FINAL";
+                setTimeout(() => location.reload(), 2000);
+            }
         } catch(e) {
-            status.innerText = "OFFLINE ERROR";
+            status.style.color = "var(--red)";
+            status.innerText = "CONNECTION ERROR: LOG LOCALLY";
         }
     }
 </script>
