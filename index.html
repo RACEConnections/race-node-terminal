@@ -3,114 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. SENTINEL TERMINAL v5.1</title>
+    <title>R.A.C.E. SENTINEL TERMINAL v5.2</title>
     <style>
         :root { --gold: #D4AF37; --green: #00FF41; --bg: #050505; --red: #ff3333; --cyan: #00FFFF; }
-        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; padding: 10px; line-height: 1.4; }
+        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; padding: 10px; }
         .terminal-border { border: 2px solid var(--gold); padding: 15px; max-width: 480px; margin: auto; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
         .header { text-align: center; border-bottom: 1px solid var(--gold); padding-bottom: 10px; margin-bottom: 20px; }
-        .box { background: #111; border: 1px solid #333; padding: 12px; margin-bottom: 15px; border-radius: 4px; }
-        .input-group { margin-bottom: 10px; }
-        label { display: block; font-size: 10px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
-        input, select { width: 100%; box-sizing: border-box; background: #000; color: #fff; border: 1px solid #444; padding: 12px; font-family: inherit; font-size: 14px; }
-        .btn { border: none; padding: 18px; font-weight: bold; cursor: pointer; width: 100%; font-size: 14px; transition: 0.3s; text-transform: uppercase; }
-        .btn-push { background: var(--gold); color: #000; border: 1px solid var(--gold); }
-        .btn-push:active { background: #000; color: var(--gold); }
-        .btn-incident { background: transparent; border: 1px solid var(--red); color: var(--red); margin-top: 15px; font-size: 11px; padding: 10px; }
+        .box { background: #111; border: 1px solid #333; padding: 12px; margin-bottom: 15px; }
+        label { display: block; font-size: 10px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
+        input, select { width: 100%; box-sizing: border-box; background: #000; color: #fff; border: 1px solid #444; padding: 12px; font-family: inherit; }
+        .btn { border: none; padding: 18px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
+        .btn-push { background: var(--gold); color: #000; }
+        .btn-incident { background: transparent; border: 1px solid var(--red); color: var(--red); margin-top: 15px; font-size: 11px; }
         #status { font-size: 10px; text-align: center; margin-top: 10px; color: var(--cyan); height: 15px; }
-        .incident-active { border: 1px solid var(--red) !important; background: #1a0000 !important; }
     </style>
 </head>
 <body>
 
 <div class="terminal-border">
     <div class="header">
-        <div style="font-size: 20px; font-weight: bold; letter-spacing: 2px;">R.A.C.E. LIAISON</div>
-        <div style="font-size: 9px; color: var(--cyan);">NODE ARC-001 | RC 722617 | NBP SHIELD ACTIVE</div>
+        <div style="font-size: 20px; font-weight: bold;">R.A.C.E. LIAISON</div>
+        <div style="font-size: 9px; color: var(--cyan);">NODE ARC-001 | RC 722617 | NBP ACTIVE</div>
     </div>
 
-    <div id="status">READY FOR LOG...</div>
+    <div id="status">SYSTEM READY</div>
 
-    <div class="box" id="mainBox">
-        <div class="input-group">
-            <label>Sentinel ID / Nickname</label>
-            <input type="text" id="liaisonID" placeholder="ENTER ID" required>
-        </div>
-
-        <div class="input-group">
-            <label>Material Category</label>
-            <select id="category">
-                <option value="Metal_Copper">COPPER / BRASS (Premium)</option>
-                <option value="Metal_Iron">IRON / STEEL (Ferrous)</option>
-                <option value="Plastic_PET">BOTTLES (PET)</option>
-                <option value="Glass_Heritage">HERITAGE GLASS</option>
-                <option value="Other_Utility">OTHER RECOVERED RWA</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Kilo Count (Scale Reading)</label>
-            <input type="number" id="weight" step="0.1" placeholder="0.00">
-        </div>
-
-        <button class="btn btn-push" onclick="submitData('KILO')">Push to Ledger</button>
+    <div class="box">
+        <label>Sentinel ID</label>
+        <input type="text" id="liaisonID" placeholder="ENTER ID">
     </div>
 
-    <button class="btn btn-incident" id="incidentToggle" onclick="toggleIncident()">!!! Report Field Confrontation</button>
+    <div class="box">
+        <label>Material Category</label>
+        <select id="category">
+            <option value="Metal_Copper">COPPER / BRASS</option>
+            <option value="Metal_Iron">IRON / STEEL</option>
+            <option value="Plastic_PET">BOTTLES (PET)</option>
+            <option value="Other_Utility">OTHER RWA</option>
+        </select>
+    </div>
+
+    <div class="box">
+        <label>Kilo Count</label>
+        <input type="number" id="weight" step="0.1" placeholder="0.00">
+        <button class="btn btn-push" onclick="submitData('KILO')" style="margin-top:10px;">Push to Ledger</button>
+    </div>
+
+    <button class="btn btn-incident" onclick="toggleIncident()">!!! Report Field Confrontation</button>
     
-    <div id="incidentBox" class="box incident-active" style="display:none; margin-top: 10px;">
-        <div class="input-group">
-            <label style="color:var(--red);">Resolution Type</label>
-            <select id="iType">
-                <option value="Illegal Dumping">Stopped Illegal Dumping</option>
-                <option value="Market Inquiry">Resolved Market Inquiry</option>
-                <option value="Official Audit">Verified by Official</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label style="color:var(--red);">Shield Method Used</label>
-            <select id="iMethod">
-                <option value="NBP Script">3-Sentence Script Used</option>
-                <option value="ID Scan">Verification #Verify Scan</option>
-                <option value="Whistle Blast">Whistle Blow/Control</option>
-            </select>
-        </div>
-        <button class="btn" style="background:var(--red); color:#fff;" onclick="submitData('INCIDENT')">Log Successful Shield</button>
-    </div>
-
-    <div style="text-align:center; margin-top:20px; font-size:8px; color:#555; letter-spacing:1px;">
-        EST. 2007 | THE LEDGER IS FINAL | OLUWA ONA
+    <div id="incidentBox" class="box" style="display:none; border-color:var(--red); margin-top:10px;">
+        <label style="color:var(--red);">Resolution</label>
+        <select id="iType" style="margin-bottom:5px;">
+            <option value="Illegal Dumping">Stopped Illegal Dumping</option>
+            <option value="Market Inquiry">Market/Official Inquiry</option>
+        </select>
+        <select id="iMethod">
+            <option value="NBP Script">3-Sentence Script Used</option>
+            <option value="ID Scan">#Verify Scan Used</option>
+        </select>
+        <button class="btn" style="background:var(--red); color:#fff; margin-top:10px;" onclick="submitData('INCIDENT')">Log Success</button>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxnEVi2_kOpKtWskRYHL_Zp7flkpYvRNLw_mrZxskgm_MIjlT22flBB0bbo_c5GpP-4/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwStHbQbEFJaWssGrPQJyWBYA6Ts3Vb3QGZsbzyieFQgWbcIHWM0D-Vhq63LIwhgSS3/exec";
 
     function toggleIncident() {
         const ib = document.getElementById('incidentBox');
-        const it = document.getElementById('incidentToggle');
-        if (ib.style.display === 'none') {
-            ib.style.display = 'block';
-            it.innerText = "CANCEL REPORT";
-        } else {
-            ib.style.display = 'none';
-            it.innerText = "!!! REPORT FIELD CONFRONTATION";
-        }
+        ib.style.display = ib.style.display === 'none' ? 'block' : 'none';
     }
 
     async function submitData(type) {
         const lid = document.getElementById('liaisonID').value;
         const status = document.getElementById('status');
-        
-        if(!lid) {
-            status.style.color = "var(--red)";
-            status.innerText = "ERROR: LIAISON ID MISSING";
-            return;
-        }
+        if(!lid) { alert("ID REQUIRED"); return; }
 
-        status.style.color = "var(--cyan)";
-        status.innerText = "UPLOADING TO SOVEREIGN NODE...";
-
+        status.innerText = "UPLOADING...";
         let params = new URLSearchParams();
         params.append("Liaison", lid);
         params.append("ReportType", type);
@@ -125,15 +93,12 @@
         }
 
         try {
-            const response = await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
-            if(response.ok) {
-                status.style.color = "var(--green)";
-                status.innerText = "SUCCESS: LEDGER UPDATED";
-                setTimeout(() => location.reload(), 2000);
-            }
+            await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
+            status.style.color = "var(--green)";
+            status.innerText = "LEDGER UPDATED";
+            setTimeout(() => location.reload(), 1500);
         } catch(e) {
-            status.style.color = "var(--red)";
-            status.innerText = "OFFLINE: RECORD SAVED LOCALLY";
+            status.innerText = "OFFLINE ERROR";
         }
     }
 </script>
