@@ -3,92 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. SENTINEL TERMINAL v5.3</title>
+    <title>R.A.C.E. | SOVEREIGN TERMINAL v5.6</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --green: #00FF41; --bg: #050505; --red: #ff3333; --cyan: #00FFFF; }
-        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; padding: 10px; }
-        .terminal-border { border: 2px solid var(--gold); padding: 15px; max-width: 480px; margin: auto; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
-        .header { text-align: center; border-bottom: 1px solid var(--gold); padding-bottom: 10px; margin-bottom: 20px; }
-        .box { background: #111; border: 1px solid #333; padding: 12px; margin-bottom: 15px; }
-        label { display: block; font-size: 10px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
-        input, select { width: 100%; box-sizing: border-box; background: #000; color: #fff; border: 1px solid #444; padding: 12px; font-family: inherit; }
-        .btn { border: none; padding: 18px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.3s; }
-        .btn-push { background: var(--gold); color: #000; }
-        .btn-push:hover { background: #fff; }
-        .btn-incident { background: transparent; border: 1px solid var(--red); color: var(--red); margin-top: 15px; font-size: 11px; }
-        #status { font-size: 10px; text-align: center; margin-top: 10px; color: var(--cyan); height: 15px; }
+        :root { --gold: #D4AF37; --green: #00FF41; --bg: #0A0A0B; --red: #FF4B2B; --cyan: #00E5FF; --glass: rgba(255, 255, 255, 0.03); }
+        body { background: var(--bg); color: #E0E0E0; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
+        .container { width: 100%; max-width: 420px; padding: 20px; position: relative; }
+        .terminal-card { background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.3); backdrop-filter: blur(20px); border-radius: 24px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; z-index: 10; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: 4px; color: var(--gold); margin: 0; }
+        .node-id { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; opacity: 0.8; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        input, select { width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 14px; transition: 0.3s; }
+        input:focus { border-color: var(--cyan); outline: none; box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.4s; font-family: 'Inter', sans-serif; }
+        .btn-push { background: var(--gold); color: #000; box-shadow: 0 10px 20px -10px rgba(212, 175, 55, 0.4); }
+        .btn-push:hover { transform: translateY(-2px); background: #fff; }
+        .btn-incident { background: transparent; color: var(--red); border: 1px solid var(--red); margin-top: 15px; font-size: 10px; opacity: 0.7; }
+        .btn-incident:hover { opacity: 1; background: rgba(255, 75, 43, 0.1); }
+        #status { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-align: center; margin-top: 20px; color: var(--green); height: 20px; }
+        .scan-line { width: 100%; height: 2px; background: var(--cyan); position: absolute; top: 0; left: 0; opacity: 0.2; animation: scan 4s linear infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="terminal-border">
-    <div class="header">
-        <div style="font-size: 20px; font-weight: bold; letter-spacing: 2px;">R.A.C.E. LIAISON</div>
-        <div style="font-size: 9px; color: var(--cyan);">NODE ARC-001 | RC 722617 | PERFORMANCE SYNC ACTIVE</div>
-    </div>
+<div class="container">
+    <div class="scan-line"></div>
+    <div class="terminal-card">
+        <div class="header">
+            <h1 class="logo">R.A.C.E.</h1>
+            <div class="node-id">NODE: ARC-001 | SECURE UPLINK</div>
+        </div>
 
-    <div id="status">SYSTEM READY</div>
+        <div id="status">SYSTEM ENCRYPTED // READY</div>
 
-    <div class="box">
-        <label>Sentinel ID / Nickname</label>
-        <input type="text" id="liaisonID" placeholder="ENTER ID">
-    </div>
+        <div class="input-group">
+            <label>Sentinel / Partner ID</label>
+            <input type="text" id="liaisonID" placeholder="EX: SENTINEL_01" spellcheck="false">
+        </div>
 
-    <div class="box">
-        <label>Material Category</label>
-        <select id="category">
-            <option value="Metal_Copper">COPPER / BRASS (Premium)</option>
-            <option value="Metal_Iron">IRON / STEEL (Ferrous)</option>
-            <option value="Plastic_PET">BOTTLES (PET)</option>
-            <option value="Other_Utility">OTHER RECOVERED RWA</option>
-        </select>
-    </div>
+        <div class="input-group">
+            <label>Asset Category</label>
+            <select id="category">
+                <option value="Metal_Copper">COPPER / BRASS (PREMIUM)</option>
+                <option value="Metal_Iron">IRON / STEEL (FERROUS)</option>
+                <option value="Plastic_PET">BOTTLES (POLYMER)</option>
+                <option value="Institutional">MUNICIPAL DATA / TOLLS</option>
+            </select>
+        </div>
 
-    <div class="box">
-        <label>Kilo Count (Verified Scale)</label>
-        <input type="number" id="weight" step="0.1" placeholder="0.00">
-        <button class="btn btn-push" onclick="submitData('KILO')" style="margin-top:10px;">Push to Ledger</button>
-    </div>
+        <div class="input-group">
+            <label>Value / Kilo Metrics</label>
+            <input type="text" id="weight" placeholder="0.00 / COMMAND">
+            <button class="btn btn-push" onclick="submitData('KILO')" style="margin-top:20px;">Authorize Sync</button>
+        </div>
 
-    <button class="btn btn-incident" id="incidentToggle" onclick="toggleIncident()">!!! Report Field Confrontation</button>
-    
-    <div id="incidentBox" class="box" style="display:none; border-color:var(--red); margin-top:10px;">
-        <label style="color:var(--red);">Resolution Resolution</label>
-        <select id="iType" style="margin-bottom:5px;">
-            <option value="Illegal Dumping">Stopped Illegal Dumping</option>
-            <option value="Market Inquiry">Resolved Market Inquiry</option>
-        </select>
-        <select id="iMethod">
-            <option value="NBP Script">3-Sentence Script Used</option>
-            <option value="ID Scan">#Verify ID Scan Used</option>
-            <option value="Whistle Blast">Whistle Blow/Control</option>
-        </select>
-        <button class="btn" style="background:var(--red); color:#fff; margin-top:10px;" onclick="submitData('INCIDENT')">Log Successful Shield</button>
+        <button class="btn btn-incident" onclick="toggleIncident()">Report Field Interaction</button>
+        
+        <div id="incidentBox" class="hidden" style="margin-top:20px; border-top: 1px solid rgba(255,75,43,0.3); padding-top:20px;">
+            <div class="input-group">
+                <label style="color:var(--red);">Resolution Type</label>
+                <select id="iType">
+                    <option value="NBP_ENFORCEMENT">NBP ENFORCEMENT</option>
+                    <option value="OFFICIAL_AUDIT">OFFICIAL AUDIT</option>
+                </select>
+            </div>
+            <button class="btn" style="background:var(--red); color:#fff;" onclick="submitData('INCIDENT')">Log Conflict Success</button>
+        </div>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQT3xNHlwBNL-PWr1wqWG6anTHvyUh3Pl2WJOXH_9bHF6t6a7SqWNJJpt0aUhbacFx/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSJDNd7uuNahawkccZUSfEyxwyHQDz1JPSosuaIY907sYkH4DLPPqh9N5ZmWBVjdqJ/exec";
 
     function toggleIncident() {
-        const ib = document.getElementById('incidentBox');
-        ib.style.display = ib.style.display === 'none' ? 'block' : 'none';
+        document.getElementById('incidentBox').classList.toggle('hidden');
     }
 
     async function submitData(type) {
         const lid = document.getElementById('liaisonID').value;
         const status = document.getElementById('status');
         if(!lid) { 
+            status.innerText = "!! ACCESS DENIED: ID REQUIRED !!";
             status.style.color = "var(--red)";
-            status.innerText = "ERROR: ID REQUIRED"; 
             return; 
         }
 
         status.style.color = "var(--cyan)";
-        status.innerText = "COMMUNICATING WITH NODE ARC-001...";
+        status.innerText = "COMMUNICATING WITH SOVEREIGN NODE...";
 
         let params = new URLSearchParams();
-        params.append("Liaison", lid);
+        params.append("Liaison", lid.toUpperCase());
         params.append("ReportType", type);
 
         if(type === 'KILO') {
@@ -96,22 +104,26 @@
             params.append("Weight", document.getElementById('weight').value);
         } else {
             params.append("IType", document.getElementById('iType').value);
-            params.append("Method", document.getElementById('iMethod').value);
-            params.append("Outcome", "RESOLVED");
+            params.append("Method", "NBP_SCRIPT_v5.6");
         }
 
         try {
             const response = await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
-            if(response.ok) {
+            const result = await response.text();
+            
+            if(result.includes("SUCCESS")) {
                 status.style.color = "var(--green)";
-                status.innerText = "SUCCESS: THE LEDGER IS FINAL";
+                status.innerText = "SYNC COMPLETE // LEDGER UPDATED";
                 setTimeout(() => location.reload(), 2000);
+            } else {
+                status.style.color = "var(--red)";
+                status.innerText = result; // Displays specific denial reason
             }
         } catch(e) {
             status.style.color = "var(--red)";
-            status.innerText = "CONNECTION ERROR: LOG LOCALLY";
+            status.innerText = "UPLINK ERROR: CHECK NODE CONNECTIVITY";
         }
     }
 </script>
 </body>
-</html>
+    </html>
