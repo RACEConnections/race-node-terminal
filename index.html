@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. | Terminal ARC-001</title>
+    <title>OMNIF | Terminal ARC-001</title>
     <style>
         :root {
             --neon-cyan: #00f3ff;
-            --emergency-red: #ff4b2b;
             --inst-gold: #d4af37;
+            --emergency-red: #ff4b2b;
             --bg-black: #050505;
-            --terminal-gray: #121212;
+            --surface: #0a0a0a;
         }
 
         body {
@@ -22,174 +22,188 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            transition: border 0.3s ease;
+            overflow-x: hidden;
         }
 
-        #terminal-interface {
+        #terminal-container {
             width: 90%;
-            max-width: 550px;
-            background: var(--terminal-gray);
+            max-width: 480px;
+            background: var(--surface);
             border: 1px solid var(--neon-cyan);
-            padding: 2.5rem;
+            padding: 2rem;
             position: relative;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 1);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
         }
 
-        h2 { border-bottom: 2px solid var(--inst-gold); padding-bottom: 10px; color: var(--inst-gold); font-size: 1.2rem; margin-top: 0; }
+        h2 { 
+            color: var(--inst-gold); 
+            border-bottom: 1px solid var(--inst-gold); 
+            padding-bottom: 8px; 
+            font-size: 1rem; 
+            letter-spacing: 2px;
+            margin-top: 0;
+        }
 
-        .metadata { font-size: 0.7rem; color: #555; margin-bottom: 1.5rem; text-transform: uppercase; }
+        .sys-info {
+            font-size: 0.65rem;
+            color: #444;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
 
-        .input-group { margin-bottom: 1.2rem; }
+        .input-group { margin-bottom: 1rem; }
 
-        label { display: block; margin-bottom: 0.4rem; font-size: 0.75rem; color: var(--neon-cyan); opacity: 0.8; }
+        label { 
+            display: block; 
+            font-size: 0.7rem; 
+            margin-bottom: 5px; 
+            color: var(--neon-cyan);
+            opacity: 0.7;
+        }
 
         input, select {
             width: 100%;
             background: #000;
-            border: 1px solid #333;
+            border: 1px solid #222;
             color: var(--neon-cyan);
             padding: 12px;
-            box-sizing: border-box;
             font-family: inherit;
+            box-sizing: border-box;
             outline: none;
+            transition: border 0.3s;
         }
 
         input:focus { border-color: var(--inst-gold); }
 
         button {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: transparent;
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
-            cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.2s;
+            cursor: pointer;
             margin-top: 10px;
+            transition: all 0.2s;
         }
 
-        button:hover { background: var(--neon-cyan); color: #000; }
+        button:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
 
-        #status-bar {
-            margin-top: 2rem;
-            padding: 12px;
-            border: 1px dashed #333;
-            font-size: 0.85rem;
+        .btn-emergency {
+            border-color: var(--emergency-red);
+            color: var(--emergency-red);
+            margin-top: 15px;
+        }
+
+        .btn-emergency:hover {
+            background: var(--emergency-red);
+            color: #fff;
+        }
+
+        #status-display {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px dashed #222;
+            font-size: 0.75rem;
             background: #000;
+            min-height: 1.2rem;
             word-break: break-all;
         }
 
-        .emergency-btn { border-color: var(--emergency-red); color: var(--emergency-red); }
-        .emergency-btn:hover { background: var(--emergency-red); color: #fff; }
-
-        /* Scanline Overlay */
-        #terminal-interface::after {
-            content: " ";
+        /* Scanline CRT Effect */
+        #terminal-container::after {
+            content: "";
             position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
+            background-size: 100% 3px;
             pointer-events: none;
         }
     </style>
 </head>
-<body id="main-body">
+<body>
 
-<div id="terminal-interface">
-    <h2>[ NODE_ARC-001_UPLINK ]</h2>
-    <div class="metadata">PROTOCOL: RACE_v5.6.4 // ORIGIN: OMNIF.CARRD.CO</div>
+<div id="terminal-container">
+    <h2>[ ARC-001 // SECURE_UPLINK ]</h2>
+    <div class="sys-info">NODE_STATUS: ONLINE // CORE_v5.6.4 // TRIAD_AUTH: ACTIVE</div>
     
     <div class="input-group">
-        <label>Sentinel_Liaison_ID</label>
-        <input type="text" id="liaisonId" placeholder="AUTH_REQUIRED">
+        <label>SENTINEL_LIAISON_ID</label>
+        <input type="text" id="liaisonId" placeholder="Enter Credentials...">
     </div>
 
-    <div id="kilo-sync-section">
-        <div class="input-group">
-            <label>Asset_Category</label>
-            <select id="category">
-                <option value="METAL_NON_FERROUS">NON-FERROUS METAL</option>
-                <option value="METAL_FERROUS">FERROUS METAL</option>
-                <option value="POLY_REFINED">REFINED POLYMER</option>
-                <option value="AUDIT_ASSET">INSTITUTIONAL ASSET</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label>Metric_Value (KG)</label>
-            <input type="number" id="weight" step="0.01" placeholder="0.00">
-        </div>
-        <button id="sync-btn" onclick="syncData('KILO')">Authorize Sync</button>
+    <div class="input-group">
+        <label>ASSET_CATEGORY</label>
+        <select id="assetCategory">
+            <option value="METAL_FERROUS">FERROUS METAL</option>
+            <option value="METAL_NON_FERROUS">NON-FERROUS METAL</option>
+            <option value="POLY_REFINED">REFINED POLYMER</option>
+            <option value="INSTITUTIONAL">INSTITUTIONAL GRADE</option>
+        </select>
     </div>
 
-    <button class="emergency-btn" onclick="syncData('INCIDENT')">! Report Field Interaction</button>
+    <div class="input-group">
+        <label>METRIC_VALUE (KG)</label>
+        <input type="number" id="metricWeight" step="0.01" placeholder="0.00">
+    </div>
 
-    <div id="status-bar">STATUS: STANDBY // AWAITING_LIAISON_AUTH</div>
+    <button onclick="transmitData('KILO')">Authorize Sync</button>
+    <button class="btn-emergency" onclick="transmitData('INCIDENT')">! Report Field Interaction</button>
+
+    <div id="status-display">SYSTEM_READY // AWAITING_INPUT</div>
 </div>
 
 <script>
-    // --- INTEGRATED CORE CONFIGURATION ---
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxheD2FJ8zp7SuB6uLXa3EtwrPlTRCp0TSGMNDNWfj6AsnrF5eFDVxzijioqZmvggE/exec";
+    // CORE DEPLOYMENT URL
+    const DEPLOY_URL = "https://script.google.com/macros/s/AKfycbyjUS2W9nul_bHq1Q9C1B4OU1q8Q3vbqubB4hPX5c9OLRAQwnB2iRAWngQR9COLhCI/exec";
 
-    // --- HANDSHAKE LOGIC (CARRD BRIDGE) ---
     window.onload = function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = document.getElementById('status-bar');
+        const params = new URLSearchParams(window.location.search);
+        const status = document.getElementById('status-display');
         
-        // Check for Emergency Redirect from Carrd
-        if (urlParams.get('mode') === 'emergency') {
-            document.getElementById('main-body').style.border = "10px solid var(--emergency-red)";
-            status.innerHTML = "PROTOCOL_LOCK: EMERGENCY_OVERRIDE_ACTIVE";
-            status.style.color = "var(--emergency-red)";
-        }
-        
-        // Auto-Auth if redirected from Secure Link
-        if (urlParams.get('liaison_auth') === 'true') {
-            status.innerHTML = "STATUS: ENCRYPTED_LINK_VERIFIED";
-            status.style.color = "var(--inst-gold)";
+        if (params.get('mode') === 'emergency') {
+            document.getElementById('terminal-container').style.borderColor = 'var(--emergency-red)';
+            status.innerText = "PROTOCOL_LOCK: EMERGENCY_OVERRIDE";
+            status.style.color = 'var(--emergency-red)';
         }
     };
 
-    async function syncData(type) {
-        const status = document.getElementById('status-bar');
+    async function transmitData(type) {
+        const status = document.getElementById('status-display');
         const liaison = document.getElementById('liaisonId').value;
-        
+        const weight = document.getElementById('metricWeight').value;
+        const category = document.getElementById('assetCategory').value;
+
         if (!liaison) {
-            status.innerHTML = "ERROR // AUTH_FAILED: NO_LIAISON_ID";
-            status.style.color = "var(--emergency-red)";
+            status.innerText = "ERROR // LIAISON_ID_REQUIRED";
+            status.style.color = 'var(--emergency-red)';
             return;
         }
 
-        status.innerHTML = "UPLINKING... SECURING_LEDGER_ANCHOR";
-        status.style.color = "var(--inst-gold)";
+        status.innerText = "COMMENCING_UPLINK... SECURING_LEDGER";
+        status.style.color = 'var(--inst-gold)';
 
-        const params = new URLSearchParams();
-        params.append('ReportType', type);
-        params.append('Liaison', liaison);
-
-        if (type === 'KILO') {
-            params.append('Category', document.getElementById('category').value);
-            params.append('Weight', document.getElementById('weight').value);
-        } else {
-            params.append('IType', 'FIELD_INTERACTION_MODULE_7');
-        }
+        const finalUrl = `${DEPLOY_URL}?ReportType=${type}&Liaison=${encodeURIComponent(liaison)}&Weight=${weight}&Category=${encodeURIComponent(category)}`;
 
         try {
-            const response = await fetch(SCRIPT_URL + "?" + params.toString());
+            const response = await fetch(finalUrl);
             const result = await response.text();
             
             if (result.includes("SUCCESS")) {
-                status.innerHTML = result.replace("SUCCESS // ", "SECURE_HASH: ");
-                status.style.color = "var(--neon-cyan)";
-                // Reset inputs on success
-                document.getElementById('weight').value = "";
+                status.innerText = result.replace("SUCCESS // ", "SECURE_HASH: ");
+                status.style.color = 'var(--neon-cyan)';
+                document.getElementById('metricWeight').value = ""; // Reset
             } else {
                 throw new Error(result);
             }
         } catch (error) {
-            status.innerHTML = "UPLINK_CRITICAL_FAILURE // " + error.message;
-            status.style.color = "var(--emergency-red)";
+            status.innerText = "CRITICAL_UPLINK_FAILURE // CHECK_CONSOLE";
+            status.style.color = 'var(--emergency-red)';
+            console.error(error);
         }
     }
 </script>
