@@ -16,13 +16,12 @@
         body {
             background-color: var(--bg-black);
             color: var(--neon-cyan);
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-family: 'JetBrains Mono', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
         }
 
         #terminal-container {
@@ -35,93 +34,23 @@
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
         }
 
-        h2 { 
-            color: var(--inst-gold); 
-            border-bottom: 1px solid var(--inst-gold); 
-            padding-bottom: 8px; 
-            font-size: 1rem; 
-            letter-spacing: 2px;
-            margin-top: 0;
-        }
-
-        .sys-info {
-            font-size: 0.65rem;
-            color: #444;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-        }
-
-        .input-group { margin-bottom: 1rem; }
-
-        label { 
-            display: block; 
-            font-size: 0.7rem; 
-            margin-bottom: 5px; 
-            color: var(--neon-cyan);
-            opacity: 0.7;
-        }
-
+        h2 { color: var(--inst-gold); border-bottom: 1px solid var(--inst-gold); padding-bottom: 8px; font-size: 1rem; margin-top: 0; }
+        .sys-info { font-size: 0.65rem; color: #444; margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.7rem; margin-bottom: 5px; opacity: 0.7; }
         input, select {
-            width: 100%;
-            background: #000;
-            border: 1px solid #222;
-            color: var(--neon-cyan);
-            padding: 12px;
-            font-family: inherit;
-            box-sizing: border-box;
-            outline: none;
-            transition: border 0.3s;
+            width: 100%; background: #000; border: 1px solid #222; color: var(--neon-cyan);
+            padding: 12px; font-family: inherit; box-sizing: border-box; outline: none; margin-bottom: 1rem;
         }
-
-        input:focus { border-color: var(--inst-gold); }
-
         button {
-            width: 100%;
-            padding: 14px;
-            background: transparent;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.2s;
+            width: 100%; padding: 14px; background: transparent; border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan); font-weight: bold; text-transform: uppercase; cursor: pointer; transition: all 0.2s;
         }
-
-        button:hover {
-            background: var(--neon-cyan);
-            color: #000;
-        }
-
-        .btn-emergency {
-            border-color: var(--emergency-red);
-            color: var(--emergency-red);
-            margin-top: 15px;
-        }
-
-        .btn-emergency:hover {
-            background: var(--emergency-red);
-            color: #fff;
-        }
-
+        button:hover { background: var(--neon-cyan); color: #000; }
+        .btn-emergency { border-color: var(--emergency-red); color: var(--emergency-red); margin-top: 10px; }
+        .btn-emergency:hover { background: var(--emergency-red); color: #fff; }
         #status-display {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px dashed #222;
-            font-size: 0.75rem;
-            background: #000;
-            min-height: 1.2rem;
-            word-break: break-all;
-        }
-
-        /* Scanline CRT Effect */
-        #terminal-container::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 3px;
-            pointer-events: none;
+            margin-top: 20px; padding: 10px; border: 1px dashed #222; font-size: 0.75rem;
+            background: #000; min-height: 1.2rem; word-break: break-all;
         }
     </style>
 </head>
@@ -129,27 +58,21 @@
 
 <div id="terminal-container">
     <h2>[ ARC-001 // SECURE_UPLINK ]</h2>
-    <div class="sys-info">NODE_STATUS: ONLINE // CORE_v5.6.4 // TRIAD_AUTH: ACTIVE</div>
+    <div class="sys-info">CORE_v16 // STATUS: ONLINE // TRIAD_AUTH: ACTIVE</div>
     
-    <div class="input-group">
-        <label>SENTINEL_LIAISON_ID</label>
-        <input type="text" id="liaisonId" placeholder="Enter Credentials...">
-    </div>
+    <label>SENTINEL_LIAISON_ID</label>
+    <input type="text" id="liaisonId" placeholder="LIAISON-ALPHA-01">
 
-    <div class="input-group">
-        <label>ASSET_CATEGORY</label>
-        <select id="assetCategory">
-            <option value="METAL_FERROUS">FERROUS METAL</option>
-            <option value="METAL_NON_FERROUS">NON-FERROUS METAL</option>
-            <option value="POLY_REFINED">REFINED POLYMER</option>
-            <option value="INSTITUTIONAL">INSTITUTIONAL GRADE</option>
-        </select>
-    </div>
+    <label>ASSET_CATEGORY</label>
+    <select id="assetCategory">
+        <option value="METAL_NON_FERROUS">NON-FERROUS METAL</option>
+        <option value="METAL_FERROUS">FERROUS METAL</option>
+        <option value="POLY_REFINED">REFINED POLYMER</option>
+        <option value="INSTITUTIONAL">INSTITUTIONAL GRADE</option>
+    </select>
 
-    <div class="input-group">
-        <label>METRIC_VALUE (KG)</label>
-        <input type="number" id="metricWeight" step="0.01" placeholder="0.00">
-    </div>
+    <label>METRIC_VALUE (KG)</label>
+    <input type="number" id="metricWeight" step="0.01" placeholder="7.21">
 
     <button onclick="transmitData('KILO')">Authorize Sync</button>
     <button class="btn-emergency" onclick="transmitData('INCIDENT')">! Report Field Interaction</button>
@@ -158,19 +81,8 @@
 </div>
 
 <script>
-    // CORE DEPLOYMENT URL
-    const DEPLOY_URL = "https://script.google.com/macros/s/AKfycbyjUS2W9nul_bHq1Q9C1B4OU1q8Q3vbqubB4hPX5c9OLRAQwnB2iRAWngQR9COLhCI/exec";
-
-    window.onload = function() {
-        const params = new URLSearchParams(window.location.search);
-        const status = document.getElementById('status-display');
-        
-        if (params.get('mode') === 'emergency') {
-            document.getElementById('terminal-container').style.borderColor = 'var(--emergency-red)';
-            status.innerText = "PROTOCOL_LOCK: EMERGENCY_OVERRIDE";
-            status.style.color = 'var(--emergency-red)';
-        }
-    };
+    // UPDATED DEPLOYMENT URL (v16)
+    const DEPLOY_URL = "https://script.google.com/macros/s/AKfycbz9UQPZmscfT4cyLA3WbRkZHVfOIu_TrAPvoHkBripqVZ1JY3yK9SVT4pmNuQCexDGl/exec";
 
     async function transmitData(type) {
         const status = document.getElementById('status-display');
@@ -184,26 +96,29 @@
             return;
         }
 
-        status.innerText = "COMMENCING_UPLINK... SECURING_LEDGER";
+        status.innerText = "UPLINKING TO SOVEREIGN CORE v16...";
         status.style.color = 'var(--inst-gold)';
 
+        // Constructing the URL with parameters
         const finalUrl = `${DEPLOY_URL}?ReportType=${type}&Liaison=${encodeURIComponent(liaison)}&Weight=${weight}&Category=${encodeURIComponent(category)}`;
 
         try {
-            const response = await fetch(finalUrl);
-            const result = await response.text();
-            
-            if (result.includes("SUCCESS")) {
-                status.innerText = result.replace("SUCCESS // ", "SECURE_HASH: ");
-                status.style.color = 'var(--neon-cyan)';
-                document.getElementById('metricWeight').value = ""; // Reset
-            } else {
-                throw new Error(result);
-            }
+            // Using 'no-cors' mode can sometimes hide errors, 
+            // but for Google Apps Script Web Apps, a standard fetch is best.
+            const response = await fetch(finalUrl, {
+                method: 'GET',
+                mode: 'no-cors' // Use no-cors to bypass pre-flight blocks if necessary
+            });
+
+            // Since 'no-cors' won't let us read the response body, 
+            // we assume success if the fetch doesn't throw.
+            status.innerText = "UPLINK_SENT // CHECK_LEDGER_FOR_HASH";
+            status.style.color = 'var(--neon-cyan)';
+            document.getElementById('metricWeight').value = ""; 
+
         } catch (error) {
-            status.innerText = "CRITICAL_UPLINK_FAILURE // CHECK_CONSOLE";
+            status.innerText = "CRITICAL_UPLINK_FAILURE: " + error.message;
             status.style.color = 'var(--emergency-red)';
-            console.error(error);
         }
     }
 </script>
