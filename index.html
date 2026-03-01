@@ -3,127 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.A.C.E. | SOVEREIGN TERMINAL v5.6</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>R.A.C.E. | Terminal ARC-001</title>
     <style>
-        :root { --gold: #D4AF37; --green: #00FF41; --bg: #0A0A0B; --red: #FF4B2B; --cyan: #00E5FF; --glass: rgba(255, 255, 255, 0.03); }
-        body { background: var(--bg); color: #E0E0E0; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
-        .container { width: 100%; max-width: 420px; padding: 20px; position: relative; }
-        .terminal-card { background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.3); backdrop-filter: blur(20px); border-radius: 24px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; z-index: 10; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: 4px; color: var(--gold); margin: 0; }
-        .node-id { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; opacity: 0.8; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
-        input, select { width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 14px; transition: 0.3s; }
-        input:focus { border-color: var(--cyan); outline: none; box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.4s; font-family: 'Inter', sans-serif; }
-        .btn-push { background: var(--gold); color: #000; box-shadow: 0 10px 20px -10px rgba(212, 175, 55, 0.4); }
-        .btn-push:hover { transform: translateY(-2px); background: #fff; }
-        .btn-incident { background: transparent; color: var(--red); border: 1px solid var(--red); margin-top: 15px; font-size: 10px; opacity: 0.7; }
-        .btn-incident:hover { opacity: 1; background: rgba(255, 75, 43, 0.1); }
-        #status { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-align: center; margin-top: 20px; color: var(--green); height: 20px; }
-        .scan-line { width: 100%; height: 2px; background: var(--cyan); position: absolute; top: 0; left: 0; opacity: 0.2; animation: scan 4s linear infinite; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        .hidden { display: none; }
+        :root {
+            --neon-cyan: #00f3ff;
+            --emergency-red: #ff4b2b;
+            --inst-gold: #d4af37;
+            --bg-black: #0a0a0a;
+            --terminal-gray: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--neon-cyan);
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #terminal-interface {
+            width: 90%;
+            max-width: 600px;
+            background: var(--terminal-gray);
+            border: 2px solid var(--neon-cyan);
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            position: relative;
+        }
+
+        h2 { border-bottom: 1px solid var(--neon-cyan); padding-bottom: 10px; color: var(--inst-gold); }
+
+        .input-group { margin-bottom: 1.5rem; }
+
+        label { display: block; margin-bottom: 0.5rem; font-size: 0.8rem; text-transform: uppercase; }
+
+        input, select {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        button:hover { background: var(--neon-cyan); color: #000; }
+
+        #status-bar {
+            margin-top: 1.5rem;
+            padding: 10px;
+            border: 1px dashed var(--neon-cyan);
+            font-size: 0.9rem;
+            min-height: 1.2rem;
+        }
+
+        .emergency-btn { border-color: var(--emergency-red); color: var(--emergency-red); margin-top: 10px; }
+        .emergency-btn:hover { background: var(--emergency-red); color: #fff; }
+
+        /* Scanline effect */
+        #terminal-interface::before {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="scan-line"></div>
-    <div class="terminal-card">
-        <div class="header">
-            <h1 class="logo">R.A.C.E.</h1>
-            <div class="node-id">NODE: ARC-001 | SECURE UPLINK</div>
-        </div>
+<div id="terminal-interface">
+    <h2>NODE ARC-001 // UPLINK</h2>
+    
+    <div class="input-group">
+        <label>Sentinel Liaison ID</label>
+        <input type="text" id="liaisonId" placeholder="Enter ID...">
+    </div>
 
-        <div id="status">SYSTEM ENCRYPTED // READY</div>
-
-        <div class="input-group">
-            <label>Sentinel / Partner ID</label>
-            <input type="text" id="liaisonID" placeholder="EX: SENTINEL_01" spellcheck="false">
-        </div>
-
+    <div id="kilo-sync-section">
         <div class="input-group">
             <label>Asset Category</label>
             <select id="category">
-                <option value="Metal_Copper">COPPER / BRASS (PREMIUM)</option>
-                <option value="Metal_Iron">IRON / STEEL (FERROUS)</option>
-                <option value="Plastic_PET">BOTTLES (POLYMER)</option>
-                <option value="Institutional">MUNICIPAL DATA / TOLLS</option>
+                <option value="METAL_COPPER">COPPER / BRASS</option>
+                <option value="METAL_IRON">IRON / STEEL</option>
+                <option value="POLY_PET">PET PLASTIC</option>
+                <option value="INSTITUTIONAL">INSTITUTIONAL GRADE</option>
             </select>
         </div>
-
         <div class="input-group">
-            <label>Value / Kilo Metrics</label>
-            <input type="text" id="weight" placeholder="0.00 / COMMAND">
-            <button class="btn btn-push" onclick="submitData('KILO')" style="margin-top:20px;">Authorize Sync</button>
+            <label>Kilo Metric (KG)</label>
+            <input type="number" id="weight" step="0.1" placeholder="00.0">
         </div>
-
-        <button class="btn btn-incident" onclick="toggleIncident()">Report Field Interaction</button>
-        
-        <div id="incidentBox" class="hidden" style="margin-top:20px; border-top: 1px solid rgba(255,75,43,0.3); padding-top:20px;">
-            <div class="input-group">
-                <label style="color:var(--red);">Resolution Type</label>
-                <select id="iType">
-                    <option value="NBP_ENFORCEMENT">NBP ENFORCEMENT</option>
-                    <option value="OFFICIAL_AUDIT">OFFICIAL AUDIT</option>
-                </select>
-            </div>
-            <button class="btn" style="background:var(--red); color:#fff;" onclick="submitData('INCIDENT')">Log Conflict Success</button>
-        </div>
+        <button onclick="syncData('KILO')">Authorize Sync</button>
     </div>
+
+    <button class="emergency-btn" onclick="syncData('INCIDENT')">Report Field Interaction</button>
+
+    <div id="status-bar">SYSTEM_READY // AWAITING_INPUT</div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSJDNd7uuNahawkccZUSfEyxwyHQDz1JPSosuaIY907sYkH4DLPPqh9N5ZmWBVjdqJ/exec";
+    // --- CORE CONFIGURATION ---
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxheD2FJ8zp7SuB6uLXa3EtwrPlTRCp0TSGMNDNWfj6AsnrF5eFDVxzijioqZmvggE/exec";
 
-    function toggleIncident() {
-        document.getElementById('incidentBox').classList.toggle('hidden');
-    }
-
-    async function submitData(type) {
-        const lid = document.getElementById('liaisonID').value;
-        const status = document.getElementById('status');
-        if(!lid) { 
-            status.innerText = "!! ACCESS DENIED: ID REQUIRED !!";
-            status.style.color = "var(--red)";
-            return; 
+    async function syncData(type) {
+        const status = document.getElementById('status-bar');
+        const liaison = document.getElementById('liaisonId').value;
+        
+        if (!liaison) {
+            status.innerHTML = "ERROR // LIAISON_ID_REQUIRED";
+            status.style.color = "var(--emergency-red)";
+            return;
         }
 
-        status.style.color = "var(--cyan)";
-        status.innerText = "COMMUNICATING WITH SOVEREIGN NODE...";
+        status.innerHTML = "UPLINKING... DO NOT DISCONNECT";
+        status.style.color = "var(--inst-gold)";
 
-        let params = new URLSearchParams();
-        params.append("Liaison", lid.toUpperCase());
-        params.append("ReportType", type);
+        const params = new URLSearchParams();
+        params.append('ReportType', type);
+        params.append('Liaison', liaison);
 
-        if(type === 'KILO') {
-            params.append("Category", document.getElementById('category').value);
-            params.append("Weight", document.getElementById('weight').value);
+        if (type === 'KILO') {
+            params.append('Category', document.getElementById('category').value);
+            params.append('Weight', document.getElementById('weight').value);
         } else {
-            params.append("IType", document.getElementById('iType').value);
-            params.append("Method", "NBP_SCRIPT_v5.6");
+            params.append('IType', 'FIELD_AUDIT_TRIGGER');
         }
 
         try {
-            const response = await fetch(SCRIPT_URL + "?" + params.toString(), { method: 'POST' });
+            const response = await fetch(SCRIPT_URL + "?" + params.toString());
             const result = await response.text();
             
-            if(result.includes("SUCCESS")) {
-                status.style.color = "var(--green)";
-                status.innerText = "SYNC COMPLETE // LEDGER UPDATED";
-                setTimeout(() => location.reload(), 2000);
+            if (result.includes("SUCCESS")) {
+                status.innerHTML = result; // Displays the REV-ARC Hash
+                status.style.color = "var(--neon-cyan)";
             } else {
-                status.style.color = "var(--red)";
-                status.innerText = result; // Displays specific denial reason
+                throw new Error(result);
             }
-        } catch(e) {
-            status.style.color = "var(--red)";
-            status.innerText = "UPLINK ERROR: CHECK NODE CONNECTIVITY";
+        } catch (error) {
+            status.innerHTML = "UPLINK_ERROR // " + error.message;
+            status.style.color = "var(--emergency-red)";
+            console.error(error);
         }
     }
 </script>
+
 </body>
-    </html>
+</html>
