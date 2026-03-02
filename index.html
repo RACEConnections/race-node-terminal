@@ -17,21 +17,14 @@
             background-color: var(--bg-black);
             color: var(--neon-cyan);
             font-family: 'JetBrains Mono', monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0;
         }
 
         #terminal-container {
-            width: 90%;
-            max-width: 480px;
-            background: var(--surface);
-            border: 1px solid var(--neon-cyan);
-            padding: 2rem;
-            position: relative;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            width: 90%; max-width: 480px; background: var(--surface);
+            border: 1px solid var(--neon-cyan); padding: 2rem;
+            position: relative; box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
         }
 
         h2 { color: var(--inst-gold); border-bottom: 1px solid var(--inst-gold); padding-bottom: 8px; font-size: 1rem; margin-top: 0; }
@@ -58,7 +51,7 @@
 
 <div id="terminal-container">
     <h2>[ ARC-001 // SECURE_UPLINK ]</h2>
-    <div class="sys-info">CORE_v16 // STATUS: ONLINE // TRIAD_AUTH: ACTIVE</div>
+    <div class="sys-info">CORE_v18 // STATUS: ONLINE // TRIAD_AUTH: ACTIVE</div>
     
     <label>SENTINEL_LIAISON_ID</label>
     <input type="text" id="liaisonId" placeholder="LIAISON-ALPHA-01">
@@ -81,7 +74,7 @@
 </div>
 
 <script>
-    // UPDATED DEPLOYMENT URL (v16)
+    // HARDENED v18 ENDPOINT
     const DEPLOY_URL = "https://script.google.com/macros/s/AKfycbz9UQPZmscfT4cyLA3WbRkZHVfOIu_TrAPvoHkBripqVZ1JY3yK9SVT4pmNuQCexDGl/exec";
 
     async function transmitData(type) {
@@ -96,28 +89,25 @@
             return;
         }
 
-        status.innerText = "UPLINKING TO SOVEREIGN CORE v16...";
+        status.innerText = "UPLINKING TO v18 CORE...";
         status.style.color = 'var(--inst-gold)';
 
-        // Constructing the URL with parameters
         const finalUrl = `${DEPLOY_URL}?ReportType=${type}&Liaison=${encodeURIComponent(liaison)}&Weight=${weight}&Category=${encodeURIComponent(category)}`;
 
         try {
-            // Using 'no-cors' mode can sometimes hide errors, 
-            // but for Google Apps Script Web Apps, a standard fetch is best.
-            const response = await fetch(finalUrl, {
+            // Using 'no-cors' allows the request to reach Google without a complex handshake
+            await fetch(finalUrl, {
                 method: 'GET',
-                mode: 'no-cors' // Use no-cors to bypass pre-flight blocks if necessary
+                mode: 'no-cors'
             });
 
-            // Since 'no-cors' won't let us read the response body, 
-            // we assume success if the fetch doesn't throw.
-            status.innerText = "UPLINK_SENT // CHECK_LEDGER_FOR_HASH";
+            // If fetch executes, the packet has been sent to Google's servers
+            status.innerText = "UPLINK_SENT // CHECK_MASTER_LEDGER";
             status.style.color = 'var(--neon-cyan)';
             document.getElementById('metricWeight').value = ""; 
 
         } catch (error) {
-            status.innerText = "CRITICAL_UPLINK_FAILURE: " + error.message;
+            status.innerText = "UPLINK_BLOCKED: " + error.message;
             status.style.color = 'var(--emergency-red)';
         }
     }
