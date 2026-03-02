@@ -5,57 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OMNIF | Terminal ARC-001</title>
     <style>
-        :root {
-            --neon-cyan: #00f3ff;
-            --inst-gold: #d4af37;
-            --emergency-red: #ff4b2b;
-            --bg-black: #050505;
-            --surface: #0a0a0a;
-        }
-
-        body {
-            background-color: var(--bg-black);
-            color: var(--neon-cyan);
-            font-family: 'JetBrains Mono', monospace;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0;
-        }
-
-        #terminal-container {
-            width: 90%; max-width: 480px; background: var(--surface);
-            border: 1px solid var(--neon-cyan); padding: 2rem;
-            position: relative; box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-        }
-
+        :root { --neon-cyan: #00f3ff; --inst-gold: #d4af37; --emergency-red: #ff4b2b; --bg-black: #050505; --surface: #0a0a0a; }
+        body { background-color: var(--bg-black); color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        #terminal-container { width: 90%; max-width: 480px; background: var(--surface); border: 1px solid var(--neon-cyan); padding: 2rem; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
         h2 { color: var(--inst-gold); border-bottom: 1px solid var(--inst-gold); padding-bottom: 8px; font-size: 1rem; margin-top: 0; }
         .sys-info { font-size: 0.65rem; color: #444; margin-bottom: 1.5rem; }
         label { display: block; font-size: 0.7rem; margin-bottom: 5px; opacity: 0.7; }
-        input, select {
-            width: 100%; background: #000; border: 1px solid #222; color: var(--neon-cyan);
-            padding: 12px; font-family: inherit; box-sizing: border-box; outline: none; margin-bottom: 1rem;
-        }
-        button {
-            width: 100%; padding: 14px; background: transparent; border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan); font-weight: bold; text-transform: uppercase; cursor: pointer; transition: all 0.2s;
-        }
+        input, select { width: 100%; background: #000; border: 1px solid #222; color: var(--neon-cyan); padding: 12px; font-family: inherit; margin-bottom: 1rem; outline: none; }
+        button { width: 100%; padding: 14px; background: transparent; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); font-weight: bold; text-transform: uppercase; cursor: pointer; }
         button:hover { background: var(--neon-cyan); color: #000; }
         .btn-emergency { border-color: var(--emergency-red); color: var(--emergency-red); margin-top: 10px; }
-        .btn-emergency:hover { background: var(--emergency-red); color: #fff; }
-        #status-display {
-            margin-top: 20px; padding: 10px; border: 1px dashed #222; font-size: 0.75rem;
-            background: #000; min-height: 1.2rem; word-break: break-all;
-        }
+        #status-display { margin-top: 20px; padding: 10px; border: 1px dashed #222; font-size: 0.75rem; background: #000; min-height: 1.2rem; }
     </style>
 </head>
 <body>
-
 <div id="terminal-container">
     <h2>[ ARC-001 // SECURE_UPLINK ]</h2>
-    <div class="sys-info">CORE_v18 // STATUS: ONLINE // TRIAD_AUTH: ACTIVE</div>
-    
+    <div class="sys-info">CORE_v20 // STATUS: SENTINEL_ACTIVE // EOD_READY</div>
     <label>SENTINEL_LIAISON_ID</label>
     <input type="text" id="liaisonId" placeholder="LIAISON-ALPHA-01">
-
     <label>ASSET_CATEGORY</label>
     <select id="assetCategory">
         <option value="METAL_NON_FERROUS">NON-FERROUS METAL</option>
@@ -63,55 +31,29 @@
         <option value="POLY_REFINED">REFINED POLYMER</option>
         <option value="INSTITUTIONAL">INSTITUTIONAL GRADE</option>
     </select>
-
     <label>METRIC_VALUE (KG)</label>
-    <input type="number" id="metricWeight" step="0.01" placeholder="7.21">
-
+    <input type="number" id="metricWeight" step="0.01" placeholder="0.00">
     <button onclick="transmitData('KILO')">Authorize Sync</button>
     <button class="btn-emergency" onclick="transmitData('INCIDENT')">! Report Field Interaction</button>
-
-    <div id="status-display">SYSTEM_READY // AWAITING_INPUT</div>
+    <div id="status-display">SYSTEM_READY // v20_UPLINK_ENCRYPTED</div>
 </div>
-
 <script>
-    // HARDENED v18 ENDPOINT
     const DEPLOY_URL = "https://script.google.com/macros/s/AKfycbz9UQPZmscfT4cyLA3WbRkZHVfOIu_TrAPvoHkBripqVZ1JY3yK9SVT4pmNuQCexDGl/exec";
-
     async function transmitData(type) {
         const status = document.getElementById('status-display');
         const liaison = document.getElementById('liaisonId').value;
         const weight = document.getElementById('metricWeight').value;
         const category = document.getElementById('assetCategory').value;
-
-        if (!liaison) {
-            status.innerText = "ERROR // LIAISON_ID_REQUIRED";
-            status.style.color = 'var(--emergency-red)';
-            return;
-        }
-
-        status.innerText = "UPLINKING TO v18 CORE...";
-        status.style.color = 'var(--inst-gold)';
-
+        if (!liaison || !weight) { status.innerText = "ERROR // MISSING_DATA"; status.style.color = 'var(--emergency-red)'; return; }
+        status.innerText = "UPLINKING TO v20 CORE...";
         const finalUrl = `${DEPLOY_URL}?ReportType=${type}&Liaison=${encodeURIComponent(liaison)}&Weight=${weight}&Category=${encodeURIComponent(category)}`;
-
         try {
-            // Using 'no-cors' allows the request to reach Google without a complex handshake
-            await fetch(finalUrl, {
-                method: 'GET',
-                mode: 'no-cors'
-            });
-
-            // If fetch executes, the packet has been sent to Google's servers
-            status.innerText = "UPLINK_SENT // CHECK_MASTER_LEDGER";
+            await fetch(finalUrl, { method: 'GET', mode: 'no-cors' });
+            status.innerText = "UPLINK_SENT // SENTINEL_MONITORING";
             status.style.color = 'var(--neon-cyan)';
             document.getElementById('metricWeight').value = ""; 
-
-        } catch (error) {
-            status.innerText = "UPLINK_BLOCKED: " + error.message;
-            status.style.color = 'var(--emergency-red)';
-        }
+        } catch (error) { status.innerText = "UPLINK_FAIL: " + error.message; }
     }
 </script>
-
 </body>
 </html>
