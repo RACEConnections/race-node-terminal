@@ -6,8 +6,33 @@
     <title>OMNIF | Terminal ARC-001 // SECURE</title>
     <style>
         :root { --neon-cyan: #00f3ff; --inst-gold: #d4af37; --emergency-red: #ff4b2b; --bg-black: #050505; --surface: #0a0a0a; }
-        body { background-color: var(--bg-black); color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        #terminal-container { width: 90%; max-width: 480px; background: var(--surface); border: 1px solid var(--neon-cyan); padding: 2rem; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+        
+        /* Kinetic Visuals Overlay */
+        body { 
+            background-color: var(--bg-black); 
+            color: var(--neon-cyan); 
+            font-family: 'JetBrains Mono', monospace; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; padding: 20px;
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.95);
+            position: relative;
+        }
+
+        body::after {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+
+        #terminal-container { 
+            width: 90%; max-width: 480px; background: var(--surface); 
+            border: 1px solid rgba(0, 243, 253, 0.4); padding: 2rem; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            animation: crt-flicker 0.15s infinite;
+            position: relative; z-index: 10;
+        }
+
         h2 { color: var(--inst-gold); border-bottom: 1px solid var(--inst-gold); padding-bottom: 8px; font-size: 1rem; margin-top: 0; }
         .sys-info { font-size: 0.65rem; color: #444; margin-bottom: 1.5rem; }
         label { display: block; font-size: 0.7rem; margin-bottom: 5px; opacity: 0.7; }
@@ -15,17 +40,34 @@
         button { width: 100%; padding: 14px; background: transparent; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); font-weight: bold; text-transform: uppercase; cursor: pointer; }
         button:hover { background: var(--neon-cyan); color: #000; }
         .btn-emergency { border-color: var(--emergency-red); color: var(--emergency-red); margin-top: 10px; }
-        #status-display, #transparency-dashboard { margin-top: 20px; padding: 10px; border: 1px dashed #222; font-size: 0.75rem; background: #000; }
-        .compliance-card { color: var(--inst-gold); }
+        
+        /* Dashboard Kinetic Pulse */
+        #transparency-dashboard { 
+            margin-top: 20px; padding: 15px; border: 1px dashed var(--inst-gold); 
+            font-size: 0.75rem; background: #000; position: relative; overflow: hidden;
+        }
+        
+        #transparency-dashboard::before {
+            content: ''; position: absolute; top: -100%; left: 0; right: 0; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.2) 50%, transparent);
+            animation: radar-sweep 3s linear infinite; pointer-events: none;
+        }
+
+        #status-display { margin-top: 10px; padding: 10px; border: 1px dashed #222; font-size: 0.75rem; background: #000; }
+
+        @keyframes crt-flicker { 0% { opacity: 0.99; } 50% { opacity: 1; } 100% { opacity: 0.98; } }
+        @keyframes radar-sweep { 0% { top: -100%; } 100% { top: 100%; } }
+        .compliance-card strong { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 <div id="terminal-container">
     <h2>[ ARC-001 // SECURE_UPLINK ]</h2>
-    <div class="sys-info">CORE_v21 // STATUS: SENTINEL_ACTIVE // TRANSPARENCY_MODE: ON</div>
+    <div class="sys-info">CORE_v21.K // STATUS: SENTINEL_ACTIVE // KINETIC_SCAN: ON</div>
     
     <div id="transparency-dashboard">
-        <div class="compliance-card">INITIALIZING_TRANSPARENCY_PULSE...</div>
+        <div class="compliance-card"><strong>[ TRANSPARENCY_STATUS: ACTIVE ]</strong><br>GEOLOGIC_SYNC: ESTABLISHED</div>
     </div>
 
     <label>SENTINEL_LIAISON_ID</label>
@@ -33,8 +75,6 @@
     <label>ASSET_CATEGORY</label>
     <select id="assetCategory">
         <option value="METAL_NON_FERROUS">NON-FERROUS METAL</option>
-        <option value="METAL_FERROUS">FERROUS METAL</option>
-        <option value="POLY_REFINED">REFINED POLYMER</option>
         <option value="INSTITUTIONAL">INSTITUTIONAL GRADE</option>
     </select>
     <label>METRIC_VALUE (KG)</label>
@@ -47,26 +87,13 @@
 <script>
     const DEPLOY_URL = "https://script.google.com/macros/s/AKfycbz9UQPZmscfT4cyLA3WbRkZHVfOIu_TrAPvoHkBripqVZ1JY3yK9SVT4pmNuQCexDGl/exec";
     
-    // Forensic Listener: Runs silently to map auditors
     async function logForensicData() {
         try {
-            const visitorData = { timestamp: new Date().toISOString(), ref: document.referrer, ua: navigator.userAgent };
-            // Replace with your private Sovereign Archive endpoint
+            const visitorData = { ts: new Date().toISOString(), ref: document.referrer, ua: navigator.userAgent };
             await fetch('https://private-archive.your-domain.com/log-auditor', { method: 'POST', body: JSON.stringify(visitorData) });
         } catch(e) {}
     }
     logForensicData();
-
-    // Transparency Dashboard Injection
-    async function loadDashboard() {
-        const dashboard = document.getElementById('transparency-dashboard');
-        try {
-            const response = await fetch('https://api.your-secure-domain.com/compliance-pulse');
-            const data = await response.json();
-            dashboard.innerHTML = `<div class="compliance-card"><strong>[ TRANSPARENCY_STATUS: ${data.status} ]</strong><br>Last Audited: ${data.timestamp}</div>`;
-        } catch(e) { dashboard.innerHTML = "[ COMPLIANCE_FEED_UNAVAILABLE ]"; }
-    }
-    loadDashboard();
 
     async function transmitData(type) {
         const status = document.getElementById('status-display');
@@ -84,4 +111,4 @@
     }
 </script>
 </body>
-    </html>
+</html>
