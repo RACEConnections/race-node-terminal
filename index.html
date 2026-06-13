@@ -3,111 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNIF | Terminal ARC-001 // SECURE</title>
+    <title>OMNIF-SACIPHUB // PROTOCOL 01</title>
     <style>
-        :root { --neon-cyan: #00f3ff; --inst-gold: #d4af37; --emergency-red: #ff4b2b; --bg-black: #050505; --surface: #0a0a0a; }
-        
-        /* Kinetic Visuals Overlay */
-        body { 
-            background-color: var(--bg-black); 
-            color: var(--neon-cyan); 
-            font-family: 'JetBrains Mono', monospace; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; padding: 20px;
-            box-shadow: inset 0 0 150px rgba(0,0,0,0.95);
-            position: relative;
+        :root {
+            --bg-color: #0a0a0a;
+            --panel-color: #121212;
+            --accent-green: #00ff66;
+            --accent-red: #ff3333;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --border-color: #262626;
         }
 
-        body::after {
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 999; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        #terminal-container { 
-            width: 90%; max-width: 480px; background: var(--surface); 
-            border: 1px solid rgba(0, 243, 253, 0.4); padding: 2rem; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-            animation: crt-flicker 0.15s infinite;
-            position: relative; z-index: 10;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
         }
 
-        h2 { color: var(--inst-gold); border-bottom: 1px solid var(--inst-gold); padding-bottom: 8px; font-size: 1rem; margin-top: 0; }
-        .sys-info { font-size: 0.65rem; color: #444; margin-bottom: 1.5rem; }
-        label { display: block; font-size: 0.7rem; margin-bottom: 5px; opacity: 0.7; }
-        input, select { width: 100%; background: #000; border: 1px solid #222; color: var(--neon-cyan); padding: 12px; font-family: inherit; margin-bottom: 1rem; outline: none; }
-        button { width: 100%; padding: 14px; background: transparent; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); font-weight: bold; text-transform: uppercase; cursor: pointer; }
-        button:hover { background: var(--neon-cyan); color: #000; }
-        .btn-emergency { border-color: var(--emergency-red); color: var(--emergency-red); margin-top: 10px; }
-        
-        /* Dashboard Kinetic Pulse */
-        #transparency-dashboard { 
-            margin-top: 20px; padding: 15px; border: 1px dashed var(--inst-gold); 
-            font-size: 0.75rem; background: #000; position: relative; overflow: hidden;
-        }
-        
-        #transparency-dashboard::before {
-            content: ''; position: absolute; top: -100%; left: 0; right: 0; height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.2) 50%, transparent);
-            animation: radar-sweep 3s linear infinite; pointer-events: none;
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        #status-display { margin-top: 10px; padding: 10px; border: 1px dashed #222; font-size: 0.75rem; background: #000; }
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        @keyframes crt-flicker { 0% { opacity: 0.99; } 50% { opacity: 1; } 100% { opacity: 0.98; } }
-        @keyframes radar-sweep { 0% { top: -100%; } 100% { top: 100%; } }
-        .compliance-card strong { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        .brand-title {
+            color: var(--accent-green);
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .system-status {
+            background-color: #002200;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--accent-green);
+            padding-left: 10px;
+            text-transform: uppercase;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .highlight {
+            color: var(--accent-green);
+        }
+
+        .warning-box {
+            background-color: #220000;
+            border: 1px solid var(--accent-red);
+            padding: 20px;
+            color: #ffb0b0;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: var(--accent-red);
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        input[type="text"], input[type="email"], select, textarea {
+            width: 100%;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            color: #ffffff;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input {
+            margin-top: 4px;
+            accent-color: var(--accent-green);
+        }
+
+        .btn {
+            background-color: transparent;
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            padding: 15px 30px;
+            font-family: inherit;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-green);
+            color: #000000;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+        }
+
+        .btn:disabled {
+            border-color: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            background-color: transparent;
+        }
+
+        footer {
+            margin-top: 5px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .clause-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: #070707;
+            padding: 10px;
+            border: 1px solid #1c1c1c;
+            max-height: 100px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-<div id="terminal-container">
-    <h2>[ ARC-001 // SECURE_UPLINK ]</h2>
-    <div class="sys-info">CORE_v21.K // STATUS: SENTINEL_ACTIVE // KINETIC_SCAN: ON</div>
-    
-    <div id="transparency-dashboard">
-        <div class="compliance-card"><strong>[ TRANSPARENCY_STATUS: ACTIVE ]</strong><br>GEOLOGIC_SYNC: ESTABLISHED</div>
+
+<div class="container">
+    <header>
+        <div>
+            <div class="brand-title">OMNIF-SACIPHUB</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">OPERATIONAL BLUEPRINT // SERIES 01</div>
+        </div>
+        <div class="system-status">STATUS: ISOLATED / GREEN</div>
+    </header>
+
+    <div class="grid">
+        <main>
+            <div class="card">
+                <h2>1. Ingestion Initialization Gateway ($20 Entry Tier)</h2>
+                <p>Welcome to Protocol: <span class="highlight">Absolute Custody</span>. You are translating your mission-critical data archives from vulnerable network vectors into absolute physical isolation.</p>
+                
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ CRITICAL WARNING: ZERO-KNOWLEDGE MANDATE</div>
+                    <p style="font-size: 0.85rem; margin-bottom: 0;">Saciphub operations personnel possess ZERO knowledge of your passwords, encryption keys, or recovery pins. Our facility is a physical fortress, not a data recovery center. If you lose your keys, your data is gone forever.</p>
+                </div>
+
+                <form id="ingestionForm" onsubmit="handleIngestionSubmit(event)">
+                    <div class="form-group">
+                        <label>Client Identification / Entity Name</label>
+                        <input type="text" id="clientName" required placeholder="e.g. Creative Studio / Corporate Firm">
+                    </div>
+                    <div class="form-group">
+                        <label>Secure Communication Vector (Email)</label>
+                        <input type="email" id="clientEmail" required placeholder="name@domain.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Hardware Selection Matrix</label>
+                        <select id="hardwareTier" onchange="toggleHardwareInfo()">
+                            <option value="tier1">Tier 1: $20 Micro-Vault (Small-capacity Media < 250MB)</option>
+                            <option value="tier3">Tier 3: Luxury Class (1TB Kodak Secured Array)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Legal Clause Access A</label>
+                        <div class="clause-text">
+                            CLAUSE 1.1: MALICIOUS CONTENT INDEMNITY. The Client explicitly warrants that submitted data elements do not violate national or international laws. Saciphub maintains content-blindness but complies fully with structured court mandates for physical hardware handovers if required.
+                        </div>
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="clauseA" onchange="validateFormGates()" required>
+                            <span>I explicitly agree to the Malicious Content Indemnity terms.</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Legal Clause Access B</label>
+                        <div class="clause-text">
+                            CLAUSE 2.3: LONG-TERM ABANDONMENT RULE. Unmaintained physical vault allocations remaining inactive or unpaid for a continuous window of twenty-four (24) months are flagged. Hardware will undergo industrial degaussing/shredding actions to permanently safeguard client privacy.
+                        </div>
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="clauseB" onchange="validateFormGates()" required>
+                            <span>I accept the 24-month physical decommissioning and slot recycling policy.</span>
+                        </label>
+                    </div>
+
+                    <label class="checkbox-group" style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <input type="checkbox" id="masterDisclaimer" onchange="validateFormGates()" required>
+                        <span style="color: #ffffff; font-weight: bold;">I assume absolute, exclusive responsibility for my encryption keys ($E_k$).</span>
+                    </label>
+
+                    <button type="submit" id="submitBtn" class="btn" disabled>Proceed to Secure Ingestion Gateway</button>
+                </form>
+            </div>
+        </main>
+
+        <aside>
+            <div class="card" style="border-color: var(--accent-green);">
+                <h2 style="border-left-color: var(--accent-green);">Join the Matrix</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">We are actively seeking local anchors to deploy physical ingestion node infrastructures globally.</p>
+                <p style="font-size: 0.85rem;">Become a <span class="highlight">Tier 2 Ingestion Node Franchisee</span>. You provide the local desk real estate; we deploy the branding, CCNC auditing framework, and operational kits. Subscription margins are split <span class="highlight">50/50</span>.</p>
+                
+                <button class="btn" style="font-size: 0.75rem; padding: 10px;" onclick="alert('System Alert: Node Partnership Portal Initiated. Transferring framework metadata to engineering...')">Apply as Node Partner</button>
+            </div>
+
+            <div class="card">
+                <h2>System Credits</h2>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;"><strong>Architecture & Concept:</strong><br>Adeoti Olufolami Adeleye</p>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;"><strong>Creative Strategy & Collaboration:</strong><br>Google Gemini AI</p>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0;"><strong>Visual Concept & Logistics:</strong><br>R.A.C.E. LLC</p>
+            </div>
+        </aside>
     </div>
 
-    <label>SENTINEL_LIAISON_ID</label>
-    <input type="text" id="liaisonId" placeholder="LIAISON-ALPHA-01">
-    <label>ASSET_CATEGORY</label>
-    <select id="assetCategory">
-        <option value="METAL_NON_FERROUS">NON-FERROUS METAL</option>
-        <option value="INSTITUTIONAL">INSTITUTIONAL GRADE</option>
-    </select>
-    <label>METRIC_VALUE (KG)</label>
-    <input type="number" id="metricWeight" step="0.01" placeholder="0.00">
-    <button onclick="transmitData('KILO')">Authorize Sync</button>
-    <button class="btn-emergency" onclick="transmitData('INCIDENT')">! Report Field Interaction</button>
-    <div id="status-display">SYSTEM_READY // v21_UPLINK_ENCRYPTED</div>
+    <footer>
+        OMNIF-SACIPHUB // R.A.C.E. LLC • SECURED UNDER INDEPENDENT HARDWARE PERIMETERS • 2026
+    </footer>
 </div>
 
 <script>
-    const DEPLOY_URL = "https://script.google.com/macros/s/AKfycbz9UQPZmscfT4cyLA3WbRkZHVfOIu_TrAPvoHkBripqVZ1JY3yK9SVT4pmNuQCexDGl/exec";
-    
-    async function logForensicData() {
-        try {
-            const visitorData = { ts: new Date().toISOString(), ref: document.referrer, ua: navigator.userAgent };
-            await fetch('https://private-archive.your-domain.com/log-auditor', { method: 'POST', body: JSON.stringify(visitorData) });
-        } catch(e) {}
-    }
-    logForensicData();
+    function validateFormGates() {
+        const clauseA = document.getElementById('clauseA').checked;
+        const clauseB = document.getElementById('clauseB').checked;
+        const masterDisclaimer = document.getElementById('masterDisclaimer').checked;
+        const submitBtn = document.getElementById('submitBtn');
 
-    async function transmitData(type) {
-        const status = document.getElementById('status-display');
-        const liaison = document.getElementById('liaisonId').value;
-        const weight = document.getElementById('metricWeight').value;
-        const category = document.getElementById('assetCategory').value;
-        if (!liaison || !weight) { status.innerText = "ERROR // MISSING_DATA"; return; }
-        status.innerText = "UPLINKING TO v21 CORE...";
-        const finalUrl = `${DEPLOY_URL}?ReportType=${type}&Liaison=${encodeURIComponent(liaison)}&Weight=${weight}&Category=${encodeURIComponent(category)}`;
-        try {
-            await fetch(finalUrl, { method: 'GET', mode: 'no-cors' });
-            status.innerText = "UPLINK_SENT // SENTINEL_MONITORING";
-            document.getElementById('metricWeight').value = ""; 
-        } catch (error) { status.innerText = "UPLINK_FAIL: " + error.message; }
+        if(clauseA && clauseB && masterDisclaimer) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    }
+
+    function toggleHardwareInfo() {
+        const tier = document.getElementById('hardwareTier').value;
+        const submitBtn = document.getElementById('submitBtn');
+        if(tier === 'tier3') {
+            document.getElementById('submitBtn').innerText = "Initialize Premium Tier 3 Array Allocation";
+        } else {
+            document.getElementById('submitBtn').innerText = "Proceed to Secure Ingestion Gateway";
+        }
+    }
+
+    function handleIngestionSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('clientName').value;
+        const tier = document.getElementById('hardwareTier').value;
+        alert(`PROTOCOL INITIALIZED // CLIENT: ${name} \nAllocating node framework tokens for your selected hardware configuration. Ingestion terminal sequence compiled.`);
     }
 </script>
 </body>
